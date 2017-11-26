@@ -51,24 +51,41 @@ def render_p1_hand(hand, suit_imgs, val_imgs, cards):
 
 
 def update_display(screen, background, p1_cards, discard_card, suit_imgs,
-                    val_imgs, game, font, msg, player1):
+                    val_imgs, game, font, msg, player1, tmp, tmp_card):
+    # draw background
     screen.blit(background, (0,0))
 
+    # draw card spaces
     for c in range(10):
         background.blit(p1_cards[c], (hand_locations[c][0], hand_locations[c][1]))
     pygame.draw.rect(screen, BLACK, deck_location, 0)
     background.blit(discard_card, (discard_location[0], discard_location[1]))
 
+    # draw card images
     render_p1_hand(player1.hand, suit_imgs, val_imgs, p1_cards)
     if len(game.discard_pile.contents) > 0:
         top_of_discard = game.discard_pile.contents[len(game.discard_pile.contents) - 1]
         render_card(top_of_discard.suit, top_of_discard.value,
                     suit_imgs, val_imgs, discard_card)
+    #else:
+    #    discard_card.fill((150, 150, 150))
+
+    #draw temp card
+    if tmp_card is None:
+        pass
+        tmp.fill(GREEN)
+        background.blit(tmp, (temp_location[0], temp_location[1]))
     else:
-        discard_card.fill((150, 150, 150))
+        tmp.fill(WHITE)
+        background.blit(tmp, (temp_location[0], temp_location[1]))
+        render_card(tmp_card.suit, tmp_card.value, suit_imgs, val_imgs, tmp)
+
+    # write message
     text = font.render(msg, 1, (10, 10, 10))
     textpos = text.get_rect(centerx=background.get_width()/2, centery=50)
     background.blit(text, textpos)
+
+    # update all
     pygame.display.flip()
 
 
@@ -89,13 +106,17 @@ def main():
     size = width, height = 560, 600
     screen = pygame.display.set_mode(size)
 
-    background = pygame.Surface(screen.get_size())
-    background = background.convert()
+    background = pygame.Surface(screen.get_size()).convert()
     background.fill(GREEN)
 
     clock = pygame.time.Clock()
 
-    msg = "Let's play Rummy!"
+    discard_card = pygame.Surface((100,150)).convert()
+    discard_card.fill(WHITE)
+    tmp = pygame.Surface((100,150)).convert()
+    tmp.fill(WHITE)
+
+    msg = "Your turn! Select a card to draw."
     font = pygame.font.Font(None, 36)
 
     c1 = pygame.Surface((100,150)).convert()
@@ -110,15 +131,9 @@ def main():
     c10 = pygame.Surface((100,150)).convert()
     p1_cards = [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10]
 
-    discard_card = pygame.Surface((100,150)).convert()
-    discard_card.fill(WHITE)
-    tmp = pygame.Surface((100,150)).convert()
-    tmp.fill(WHITE)
-    pygame.draw.rect(screen, BLACK, deck_location, 0)
-
     for c in range(10):
         p1_cards[c].fill(WHITE)
-        background.blit(p1_cards[c], (hand_locations[c][0], hand_locations[c][1]))
+        #background.blit(p1_cards[c], (hand_locations[c][0], hand_locations[c][1]))
 
     suit_imgs = [pygame.image.load("img/heart.png").convert(),
     pygame.image.load("img/diamond.png").convert(),
@@ -159,31 +174,36 @@ def main():
         val_imgs[i] = pygame.transform.scale(val_imgs[i], (50, 50))
 
     update_display(screen, background, p1_cards, discard_card, suit_imgs,
-    val_imgs, game, font, msg, player1)
+    val_imgs, game, font, msg, player1, tmp, None)
+    update_display(screen, background, p1_cards, discard_card, suit_imgs,
+    val_imgs, game, font, msg, player1, tmp, None) # why does this fix things??? is there a better way??
+
     playing = True
 
     # *********************** MAIN GAME LOOP **********************************
     while playing:
+        clock.tick(60)
+        #print([(c.value, c.suit) for c in player1.hand.contents])
 
         update_display(screen, background, p1_cards, discard_card, suit_imgs,
-        val_imgs, game, font, msg, player1)
-        clock.tick(60)
+        val_imgs, game, font, msg, player1, tmp, None)
+        update_display(screen, background, p1_cards, discard_card, suit_imgs,
+        val_imgs, game, font, msg, player1, tmp, None)
 
         # execute player 1's turn
         if game.turn == game.player1:
             c = game.player1.play_draw()
-            tmp.fill(WHITE)
-            background.blit(tmp, (temp_location[0], temp_location[1]))
-            render_card(c.suit, c.value, suit_imgs, val_imgs, tmp)
             update_display(screen, background, p1_cards, discard_card, suit_imgs,
-                            val_imgs, game, font, msg, player1)
-            clock.tick(1)
+                            val_imgs, game, font, msg, player1, tmp, c)
+            update_display(screen, background, p1_cards, discard_card, suit_imgs,
+                            val_imgs, game, font, msg, player1, tmp, c)
 
             game.player1.play_discard()
-            tmp.fill(GREEN)
             update_display(screen, background, p1_cards, discard_card, suit_imgs,
-                            val_imgs, game, font, msg, player1)
-            clock.tick(1)
+                            val_imgs, game, font, msg, player1, tmp, None)
+            update_display(screen, background, p1_cards, discard_card, suit_imgs,
+                            val_imgs, game, font, msg, player1, tmp, None)
+
             #At the end of a play, each player has the opportunity to say rummy.
             #If they say rummy, and they don't have one, the other player gets to
             #see their hand. If they do have a rummy, they win and the game ends.

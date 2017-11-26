@@ -43,7 +43,7 @@ class Human(Player):
                             return self.draw_discard()
                     elif deck_card.collidepoint(x, y):
                         return self.draw_deck()
-        return
+        return None
 
 
     def play_discard(self):
