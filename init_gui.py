@@ -27,6 +27,7 @@ hand_locations = [[10, 280, 100, 150], [120, 280, 100, 150], [230, 280, 100, 150
 
 deck_location = [175, 100, 100, 150]
 discard_location = [285, 100, 100, 150]
+temp_location = [395, 100, 100, 150]
 
 def render_card(suit, value, suit_imgs, val_imgs, bg):
     start_ind = 0
@@ -52,14 +53,19 @@ def render_p1_hand(hand, suit_imgs, val_imgs, cards):
 def update_display(screen, background, p1_cards, discard_card, suit_imgs,
                     val_imgs, game, font, msg, player1):
     screen.blit(background, (0,0))
+
     for c in range(10):
         background.blit(p1_cards[c], (hand_locations[c][0], hand_locations[c][1]))
     pygame.draw.rect(screen, BLACK, deck_location, 0)
     background.blit(discard_card, (discard_location[0], discard_location[1]))
+
     render_p1_hand(player1.hand, suit_imgs, val_imgs, p1_cards)
-    top_of_discard = game.discard_pile.contents[len(game.discard_pile.contents) - 1]
-    render_card(top_of_discard.suit, top_of_discard.value,
-                suit_imgs, val_imgs, discard_card)
+    if len(game.discard_pile.contents) > 0:
+        top_of_discard = game.discard_pile.contents[len(game.discard_pile.contents) - 1]
+        render_card(top_of_discard.suit, top_of_discard.value,
+                    suit_imgs, val_imgs, discard_card)
+    else:
+        discard_card.fill((150, 150, 150))
     text = font.render(msg, 1, (10, 10, 10))
     textpos = text.get_rect(centerx=background.get_width()/2, centery=50)
     background.blit(text, textpos)
@@ -106,6 +112,8 @@ def main():
 
     discard_card = pygame.Surface((100,150)).convert()
     discard_card.fill(WHITE)
+    tmp = pygame.Surface((100,150)).convert()
+    tmp.fill(WHITE)
     pygame.draw.rect(screen, BLACK, deck_location, 0)
 
     for c in range(10):
@@ -150,25 +158,32 @@ def main():
     for i in range(26):
         val_imgs[i] = pygame.transform.scale(val_imgs[i], (50, 50))
 
-    screen.blit(background, (0, 0))
-    pygame.display.flip()
-
+    update_display(screen, background, p1_cards, discard_card, suit_imgs,
+    val_imgs, game, font, msg, player1)
     playing = True
+
+    # *********************** MAIN GAME LOOP **********************************
     while playing:
+
+        update_display(screen, background, p1_cards, discard_card, suit_imgs,
+        val_imgs, game, font, msg, player1)
         clock.tick(60)
 
-        # if no more cards in deck, then shuffle discard pile
-        if len(game.deck.contents) == 0:
-            recentCard = game.discard_pile.pop()
-            game.deck = game.discard_pile
-            random.shuffle(game.deck)
-            game.discard_pile = Deck(0)
-            game.discard_pile.add(recentCard)
         # execute player 1's turn
         if game.turn == game.player1:
-            game.player1.play_draw()
+            c = game.player1.play_draw()
+            tmp.fill(WHITE)
+            background.blit(tmp, (temp_location[0], temp_location[1]))
+            render_card(c.suit, c.value, suit_imgs, val_imgs, tmp)
+            update_display(screen, background, p1_cards, discard_card, suit_imgs,
+                            val_imgs, game, font, msg, player1)
+            clock.tick(1)
 
             game.player1.play_discard()
+            tmp.fill(GREEN)
+            update_display(screen, background, p1_cards, discard_card, suit_imgs,
+                            val_imgs, game, font, msg, player1)
+            clock.tick(1)
             #At the end of a play, each player has the opportunity to say rummy.
             #If they say rummy, and they don't have one, the other player gets to
             #see their hand. If they do have a rummy, they win and the game ends.
@@ -181,14 +196,12 @@ def main():
         # execute player 2's turn
         elif game.turn == game.player2:
             #game.player2.play_draw()
-
             #game.player2.play_discard()TODO - uncomment once implemented
             if(game.check_goal_state(player2) is not None):
                 msg = "You lose! Player 2 has Rummy!"
                 playing = False
             else:
                 game.turn = game.player1
-                msg = "Your turn! Select a card to draw."
 
         # process new events - only on human's turn???
         for event in pygame.event.get():
@@ -198,7 +211,7 @@ def main():
                 playing = False
 
         # update display!
-        update_display(screen, background, p1_cards, discard_card, suit_imgs,
-                    val_imgs, game, font, msg, player1)
+        #update_display(screen, background, p1_cards, discard_card, suit_imgs,
+        #            val_imgs, game, font, msg, player1)
 
     pygame.quit()

@@ -23,6 +23,8 @@ class Game:
         self.deck = game_deck
         self.discard_pile = Deck(0)
         self.discard_pile.add(self.deck.contents.pop())
+        #print(self.discard_pile.contents[0].suit)
+        #print(self.discard_pile.contents[0].value)
         self.turn = player1
 
     def recent_discard(self):
@@ -66,17 +68,30 @@ class Player:
     def draw_deck(self):
         c = self.game_state.deck.contents.pop()
         self.hand.add(c)
+        if len(self.game_state.deck.contents) == 0:
+            recentCard = self.game_state.discard_pile.contents.pop()
+            self.game_state.deck = self.game_state.discard_pile
+            random.shuffle(self.game_state.deck.contents)
+            game.discard_pile.contents = Deck(0)
+            game.discard_pile.add(recentCard)
+        return c
 
-    """ Removes a card from discard_pile and add it to Player's hand. """
+    """ Removes a card from discard_pile and add it to Player's hand. Returns
+        the card if successful, else returns None. """
     def draw_discard(self):
-        c = self.game_state.discard_pile.contents.pop()
-        self.hand.add(c)
+        if len(self.game_state.discard_pile.contents) > 0:
+            c = self.game_state.discard_pile.contents.pop()
+            self.hand.add(c)
+            return c
+        else:
+            return None
 
-    """ Removes and returns a specific card from this Deck."""
+    """ Removes and returns a specific card from this Deck. Returns its index."""
     def discard(self, card):
         i = self.hand.contents.index(card)
         c = self.hand.contents.pop(i)
         self.game_state.discard_pile.add(c)
+        return i
 
     def play_draw(self):
         raise NotImplementedError("play has not been implemented")
