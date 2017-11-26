@@ -33,8 +33,8 @@ class Game:
     """ Returns the match if a player has Rummy, else None """
     def check_goal_state(self, player):
         # check player 1's hand
-        matches = self.player1.hand.find_runs()
-        matches.extend(self.player1.hand.find_x_of_a_kind())
+        matches = player.hand.find_runs()
+        matches.extend(player.hand.find_x_of_a_kind())
 
         # TODO: test this - might be some index issues
         for i in range(len(matches)):
