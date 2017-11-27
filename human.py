@@ -29,10 +29,8 @@ class Human(Player):
         while(True):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    playing = False
                     return
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    playing = False
                     return
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     x, y = event.pos
@@ -53,9 +51,9 @@ class Human(Player):
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    playing = False
+                    return
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    playing = False
+                    return
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     x, y = event.pos
                     for i in range(11):

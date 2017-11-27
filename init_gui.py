@@ -71,14 +71,12 @@ def update_display(screen, background, p1_cards, discard_card, suit_imgs,
     #    discard_card.fill((150, 150, 150))
 
     #draw temp card
-    if tmp_card is None:
-        pass
-        tmp.fill(GREEN)
-        background.blit(tmp, (temp_location[0], temp_location[1]))
+    background.blit(tmp, (temp_location[0], temp_location[1]))
+
+    if tmp_card is not None:
+        render_card(tmp_card.suit, tmp_card.value, suit_imgs, val_imgs, tmp)
     else:
         tmp.fill(WHITE)
-        background.blit(tmp, (temp_location[0], temp_location[1]))
-        render_card(tmp_card.suit, tmp_card.value, suit_imgs, val_imgs, tmp)
 
     # write message
     text = font.render(msg, 1, (10, 10, 10))
@@ -98,7 +96,7 @@ def main():
     player1 = Human(game, "test")
     game.player1 = player1
     game.turn = player1
-    player2 = Player(game, "test2")
+    player2 = Control(game, "test2")
     game.player2 = player2
 
     # GUI initialization
@@ -192,13 +190,24 @@ def main():
 
         # execute player 1's turn
         if game.turn == game.player1:
+            print("Time to draw")
             c = game.player1.play_draw()
+            print(c.suit)
+            print(c.value)
+            if c is None:
+                pygame.quit()
             update_display(screen, background, p1_cards, discard_card, suit_imgs,
                             val_imgs, game, font, msg, player1, tmp, c)
             update_display(screen, background, p1_cards, discard_card, suit_imgs,
                             val_imgs, game, font, msg, player1, tmp, c)
-
-            game.player1.play_discard()
+            update_display(screen, background, p1_cards, discard_card, suit_imgs,
+                            val_imgs, game, font, msg, player1, tmp, c)
+            print("Time to discard")
+            c = game.player1.play_discard()
+            print(c.suit)
+            print(c.value)
+            if c is None:
+                pygame.quit()
             update_display(screen, background, p1_cards, discard_card, suit_imgs,
                             val_imgs, game, font, msg, player1, tmp, None)
             update_display(screen, background, p1_cards, discard_card, suit_imgs,
@@ -216,7 +225,7 @@ def main():
         # execute player 2's turn
         elif game.turn == game.player2:
             #game.player2.play_draw()
-            #game.player2.play_discard()TODO - uncomment once implemented
+            #game.player2.play_discard()
             if(game.check_goal_state(player2) is not None):
                 msg = "You lose! Player 2 has Rummy!"
                 playing = False
