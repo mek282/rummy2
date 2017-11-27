@@ -23,14 +23,16 @@ class Control(Player):
         i = random.randint(0,1)
         #if i == 0, draw from the closed deck
         if i == 0:
-            self.draw_deck()
+            return self.draw_deck()
         #if i == 1, draw from the discard pile
         else:
-            self.draw_discard()
+            return self.draw_discard()
 
     def play_discard(self):
         i = random.randint(0,10)
-        self.discard(self.hand.contents[i])
+        c = self.hand.contents[i]
+        self.discard(c)
+        return c
 
     def declare_rummy(self):
         self.game_state.check_goal_state(self)

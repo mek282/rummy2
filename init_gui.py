@@ -1,11 +1,11 @@
 """
 Main file: runs the game loop and updates the display
 TODO:
-- display player 1's hand, the discard pile, the top of the deck, possibly
-player 2's (face down) hand, and a text window
-- update the text window to prompt the human player during their turn
-- update the discard pile and deck
-- animations???
+- update text to be larger and display on multiple lines
+- replace numbers with letters for ace and royals
+- figure out why I need to call update so many times and fix it
+- disallow drawing from discard and immediately discarding
+- fix display when discard pile is empty
 """
 
 import sys, pygame
@@ -27,6 +27,7 @@ hand_locations = [[10, 280, 100, 150], [120, 280, 100, 150], [230, 280, 100, 150
 
 deck_location = [175, 100, 100, 150]
 discard_location = [285, 100, 100, 150]
+temp_location = [395, 100, 100, 150]
 
 def render_card(suit, value, suit_imgs, val_imgs, bg):
     start_ind = 0
@@ -50,19 +51,40 @@ def render_p1_hand(hand, suit_imgs, val_imgs, cards):
 
 
 def update_display(screen, background, p1_cards, discard_card, suit_imgs,
-                    val_imgs, game, font, msg, player1):
+                    val_imgs, game, font, msg, player1, tmp, tmp_card):
+    # draw background
     screen.blit(background, (0,0))
+
+    # draw card spaces
     for c in range(10):
         background.blit(p1_cards[c], (hand_locations[c][0], hand_locations[c][1]))
     pygame.draw.rect(screen, BLACK, deck_location, 0)
     background.blit(discard_card, (discard_location[0], discard_location[1]))
+
+    # draw card images
     render_p1_hand(player1.hand, suit_imgs, val_imgs, p1_cards)
-    top_of_discard = game.discard_pile.contents[len(game.discard_pile.contents) - 1]
-    render_card(top_of_discard.suit, top_of_discard.value,
-                suit_imgs, val_imgs, discard_card)
+    if len(game.discard_pile.contents) > 0:
+        top_of_discard = game.discard_pile.contents[len(game.discard_pile.contents) - 1]
+        render_card(top_of_discard.suit, top_of_discard.value,
+                    suit_imgs, val_imgs, discard_card)
+    #else:
+    #    discard_card.fill((150, 150, 150))
+
+    #draw temp card
+    background.blit(tmp, (temp_location[0], temp_location[1]))
+
+    if tmp_card is not None:
+        render_card(tmp_card.suit, tmp_card.value, suit_imgs, val_imgs, tmp)
+    else:
+        tmp.fill(WHITE)
+
+    # write message
     text = font.render(msg, 1, (10, 10, 10))
     textpos = text.get_rect(centerx=background.get_width()/2, centery=50)
+    background.fill(GREEN, (0, 0, 560, 100))
     background.blit(text, textpos)
+
+    # update all
     pygame.display.flip()
 
 
@@ -75,7 +97,7 @@ def main():
     player1 = Human(game, "test")
     game.player1 = player1
     game.turn = player1
-    player2 = Player(game, "test2")
+    player2 = Control(game, "test2")
     game.player2 = player2
 
     # GUI initialization
@@ -83,14 +105,18 @@ def main():
     size = width, height = 560, 600
     screen = pygame.display.set_mode(size)
 
-    background = pygame.Surface(screen.get_size())
-    background = background.convert()
+    background = pygame.Surface(screen.get_size()).convert()
     background.fill(GREEN)
 
     clock = pygame.time.Clock()
 
-    msg = "Let's play Rummy!"
-    font = pygame.font.Font(None, 36)
+    discard_card = pygame.Surface((100,150)).convert()
+    discard_card.fill(WHITE)
+    tmp = pygame.Surface((100,150)).convert()
+    tmp.fill(WHITE)
+
+    msg = "Your turn! Select a card to draw."
+    font = pygame.font.Font(None, 22)
 
     c1 = pygame.Surface((100,150)).convert()
     c2 = pygame.Surface((100,150)).convert()
@@ -104,13 +130,9 @@ def main():
     c10 = pygame.Surface((100,150)).convert()
     p1_cards = [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10]
 
-    discard_card = pygame.Surface((100,150)).convert()
-    discard_card.fill(WHITE)
-    pygame.draw.rect(screen, BLACK, deck_location, 0)
-
     for c in range(10):
         p1_cards[c].fill(WHITE)
-        background.blit(p1_cards[c], (hand_locations[c][0], hand_locations[c][1]))
+        #background.blit(p1_cards[c], (hand_locations[c][0], hand_locations[c][1]))
 
     suit_imgs = [pygame.image.load("img/heart.png").convert(),
     pygame.image.load("img/diamond.png").convert(),
@@ -150,45 +172,90 @@ def main():
     for i in range(26):
         val_imgs[i] = pygame.transform.scale(val_imgs[i], (50, 50))
 
-    screen.blit(background, (0, 0))
-    pygame.display.flip()
+    update_display(screen, background, p1_cards, discard_card, suit_imgs,
+    val_imgs, game, font, msg, player1, tmp, None)
+    update_display(screen, background, p1_cards, discard_card, suit_imgs,
+    val_imgs, game, font, msg, player1, tmp, None) # why does this fix things??? is there a better way??
 
     playing = True
+
+    # *********************** MAIN GAME LOOP **********************************
     while playing:
         clock.tick(60)
+        #print([(c.value, c.suit) for c in player1.hand.contents])
 
-        # if no more cards in deck, then shuffle discard pile
-        if len(game.deck.contents) == 0:
-            recentCard = game.discard_pile.pop()
-            game.deck = game.discard_pile
-            random.shuffle(game.deck)
-            game.discard_pile = Deck(0)
-            game.discard_pile.add(recentCard)
+        update_display(screen, background, p1_cards, discard_card, suit_imgs,
+        val_imgs, game, font, msg, player1, tmp, None)
+        update_display(screen, background, p1_cards, discard_card, suit_imgs,
+        val_imgs, game, font, msg, player1, tmp, None)
+
         # execute player 1's turn
         if game.turn == game.player1:
-            game.player1.play_draw()
+            print("Time to draw")
+            c = game.player1.play_draw()
+            print(c.suit)
+            print(c.value)
+            if c is None:
+                pygame.quit()
+            msg = "Select a card to discard."
+            update_display(screen, background, p1_cards, discard_card, suit_imgs,
+                            val_imgs, game, font, msg, player1, tmp, c)
+            update_display(screen, background, p1_cards, discard_card, suit_imgs,
+                            val_imgs, game, font, msg, player1, tmp, c)
+            update_display(screen, background, p1_cards, discard_card, suit_imgs,
+                            val_imgs, game, font, msg, player1, tmp, c)
+            print("Time to discard")
+            c = game.player1.play_discard()
+            print(c.suit)
+            print(c.value)
+            if c is None:
+                pygame.quit()
+            update_display(screen, background, p1_cards, discard_card, suit_imgs,
+                            val_imgs, game, font, msg, player1, tmp, None)
+            update_display(screen, background, p1_cards, discard_card, suit_imgs,
+                            val_imgs, game, font, msg, player1, tmp, None)
 
-            game.player1.play_discard()
             #At the end of a play, each player has the opportunity to say rummy.
             #If they say rummy, and they don't have one, the other player gets to
             #see their hand. If they do have a rummy, they win and the game ends.
             #We need to implement a function to check if a player has a rummy.
-            if(game.check_goal_state(player1) is not None):
+            matches = game.check_goal_state(player1)
+            if(matches is not None):
                 msg = "You win!"
                 playing = False
+                print("YOU WIN!")
+                print([(c.value, c.suit) for c in player1.hand.contents])
+                print([(c.value, c.suit) for c in matches])
+                update_display(screen, background, p1_cards, discard_card, suit_imgs,
+                                val_imgs, game, font, msg, player1, tmp, None)
             else:
                 game.turn = game.player2
         # execute player 2's turn
         elif game.turn == game.player2:
-            #game.player2.play_draw()
+            d = game.recent_discard()
+            c_draw = game.player2.play_draw()
+            c_disc = game.player2.play_discard()
+            if d == c_draw:
+                msg = ("P2 drew " + str(c_draw.value) + " of " + c_draw.suit
+                + " from the discard pile, and discarded " + str(c_disc.value) +
+                " of " + c_disc.suit + ".")
+            else:
+                msg = ("P2 drew from the deck, and discarded "
+                + str(c_disc.value) + " of " + c_disc.suit + ".")
+            update_display(screen, background, p1_cards, discard_card, suit_imgs,
+                            val_imgs, game, font, msg, player1, tmp, None)
 
-            #game.player2.play_discard()TODO - uncomment once implemented
-            if(game.check_goal_state(player2) is not None):
+            matches = game.check_goal_state(player2)
+            if(matches is not None):
                 msg = "You lose! Player 2 has Rummy!"
                 playing = False
+                print("YOU LOSE!")
+                print([(c.value, c.suit) for c in player2.hand.contents])
+                print([(c.value, c.suit) for c in matches])
+                update_display(screen, background, p1_cards, discard_card, suit_imgs,
+                                val_imgs, game, font, msg, player1, tmp, None)
             else:
                 game.turn = game.player1
-                msg = "Your turn! Select a card to draw."
 
         # process new events - only on human's turn???
         for event in pygame.event.get():
@@ -198,7 +265,7 @@ def main():
                 playing = False
 
         # update display!
-        update_display(screen, background, p1_cards, discard_card, suit_imgs,
-                    val_imgs, game, font, msg, player1)
+        #update_display(screen, background, p1_cards, discard_card, suit_imgs,
+        #            val_imgs, game, font, msg, player1)
 
-    pygame.quit()
+    #pygame.quit()

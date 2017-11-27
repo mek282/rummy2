@@ -23,10 +23,12 @@ class Game:
         self.deck = game_deck
         self.discard_pile = Deck(0)
         self.discard_pile.add(self.deck.contents.pop())
+        #print(self.discard_pile.contents[0].suit)
+        #print(self.discard_pile.contents[0].value)
         self.turn = player1
 
     def recent_discard(self):
-        return discard_pile[len(discard_pile)-1]
+        return self.discard_pile.contents[len(self.discard_pile.contents)-1]
 
     """ Returns the match if a player has Rummy, else None """
     def check_goal_state(self, player):
@@ -41,10 +43,12 @@ class Game:
                     tmp = matches[i] + matches[j] + matches[k]
                     if len(tmp) != 10:
                         continue
+                    count = 0
                     for card in tmp:
-                        if tmp.count(card) > 1:
-                            continue
-                    return tmp
+                        if tmp.count(card) == 1:
+                            count +=1
+                    if count == 10:
+                        return tmp
         return None
 
     def end():
@@ -60,27 +64,44 @@ class Player:
         self.game_state = game
         for i in range(10):
             self.draw_deck()
+        self.hand.contents = sorted(self.hand.contents, key=attrgetter('suit', 'value'))
 
 
     """ Removes a card from deck and add it to Player's hand. """
     def draw_deck(self):
         c = self.game_state.deck.contents.pop()
         self.hand.add(c)
+        if len(self.game_state.deck.contents) == 0:
+            recentCard = self.game_state.discard_pile.contents.pop()
+            self.game_state.deck = self.game_state.discard_pile
+            random.shuffle(self.game_state.deck.contents)
+            game.discard_pile.contents = Deck(0)
+            game.discard_pile.add(recentCard)
+        return c
 
-    """ Removes a card from discard_pile and add it to Player's hand. """
+    """ Removes a card from discard_pile and add it to Player's hand. Returns
+        the card if successful, else returns None. """
     def draw_discard(self):
-        c = self.game_state.discard_pile.contents.pop()
-        self.hand.add(c)
+        if len(self.game_state.discard_pile.contents) > 0:
+            c = self.game_state.discard_pile.contents.pop()
+            self.hand.add(c)
+            return c
+        else:
+            return None
 
-    """ Removes and returns a specific card from this Deck."""
+    """ Removes and returns a specific card from this Deck. Returns its index."""
     def discard(self, card):
         i = self.hand.contents.index(card)
         c = self.hand.contents.pop(i)
         self.game_state.discard_pile.add(c)
+        self.hand.contents = sorted(self.hand.contents, key=attrgetter('suit', 'value'))
+        return i
 
+    """ Should return the card the player just drew """
     def play_draw(self):
         raise NotImplementedError("play has not been implemented")
 
+    """ Returns the card the player just discarded """
     def play_discard(self):
         raise NotImplementedError("play has not been implemented")
 
@@ -119,13 +140,13 @@ class Deck:
         h = sorted(self.contents, key=attrgetter('suit', 'value'))
         # runs of length 3
         for i in range(len(h)-2):
-            if ((h[i].value == h[i+1].value) and (h[i+1].value == h[i+2].value)
+            if ((h[i].value + 1 == h[i+1].value) and (h[i+1].value + 1 == h[i+2].value)
             and (h[i].suit == h[i+1].suit) and (h[i+1].suit == h[i+2].suit)):
                 runs.append([h[i], h[i+1], h[i+2]])
         # runs of length 4
         for i in range(len(h)-3):
-            if ((h[i].value == h[i+1].value) and (h[i+1].value == h[i+2].value)
-                and (h[i+2].value == h[i+3].value) and (h[i].suit == h[i+1].suit)
+            if ((h[i].value + 1 == h[i+1].value) and (h[i+1].value + 1 == h[i+2].value)
+                and (h[i+2].value + 1 == h[i+3].value) and (h[i].suit == h[i+1].suit)
                 and (h[i+1].suit == h[i+2].suit) and (h[i+2].suit == h[i+3].suit)):
                 runs.append([h[i], h[i+1], h[i+2], h[i+3]])
         return runs
@@ -150,10 +171,12 @@ class Deck:
             elif (i == len(h)-4 and h[i+1].value == h[i+2].value
                 and h[i+2].value == h[i+3].value):
                 x_of_a_kind.append([h[i+1], h[i+2], h[i+3]])
-            return x_of_a_kind
+        return x_of_a_kind
 
 """
 Tree object for heuristic/gametree search
 """
 class Tree:
     def __init__(self, player, card)
+        return x_of_a_kind
+
