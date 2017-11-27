@@ -1,11 +1,8 @@
 """
 Main file: runs the game loop and updates the display
 TODO:
-- display player 1's hand, the discard pile, the top of the deck, possibly
-player 2's (face down) hand, and a text window
-- update the text window to prompt the human player during their turn
-- update the discard pile and deck
-- animations???
+- update text to be larger and display on multiple lines
+- figure out why I need to call update so many times and fix it
 """
 
 import sys, pygame
@@ -81,6 +78,7 @@ def update_display(screen, background, p1_cards, discard_card, suit_imgs,
     # write message
     text = font.render(msg, 1, (10, 10, 10))
     textpos = text.get_rect(centerx=background.get_width()/2, centery=50)
+    background.fill(GREEN, (0, 0, 560, 100))
     background.blit(text, textpos)
 
     # update all
@@ -115,7 +113,7 @@ def main():
     tmp.fill(WHITE)
 
     msg = "Your turn! Select a card to draw."
-    font = pygame.font.Font(None, 36)
+    font = pygame.font.Font(None, 22)
 
     c1 = pygame.Surface((100,150)).convert()
     c2 = pygame.Surface((100,150)).convert()
@@ -196,6 +194,7 @@ def main():
             print(c.value)
             if c is None:
                 pygame.quit()
+            msg = "Select a card to discard."
             update_display(screen, background, p1_cards, discard_card, suit_imgs,
                             val_imgs, game, font, msg, player1, tmp, c)
             update_display(screen, background, p1_cards, discard_card, suit_imgs,
@@ -224,8 +223,18 @@ def main():
                 game.turn = game.player2
         # execute player 2's turn
         elif game.turn == game.player2:
-            #game.player2.play_draw()
-            #game.player2.play_discard()
+            d = game.recent_discard()
+            c_draw = game.player2.play_draw()
+            c_disc = game.player2.play_discard()
+            if d == c_draw:
+                msg = ("P2 drew " + str(c_draw.value) + " of " + c_draw.suit
+                + " from the discard pile, and discarded " + str(c_disc.value) +
+                " of " + c_disc.suit + ".")
+            else:
+                msg = ("P2 drew from the deck, and discarded "
+                + str(c_disc.value) + " of " + c_disc.suit + ".")
+            update_display(screen, background, p1_cards, discard_card, suit_imgs,
+                            val_imgs, game, font, msg, player1, tmp, None)
             if(game.check_goal_state(player2) is not None):
                 msg = "You lose! Player 2 has Rummy!"
                 playing = False

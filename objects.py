@@ -28,7 +28,7 @@ class Game:
         self.turn = player1
 
     def recent_discard(self):
-        return discard_pile[len(discard_pile)-1]
+        return self.discard_pile.contents[len(self.discard_pile.contents)-1]
 
     """ Returns the match if a player has Rummy, else None """
     def check_goal_state(self, player):
@@ -93,9 +93,11 @@ class Player:
         self.game_state.discard_pile.add(c)
         return i
 
+    """ Should return the card the player just drew """
     def play_draw(self):
         raise NotImplementedError("play has not been implemented")
 
+    """ Returns the card the player just discarded """
     def play_discard(self):
         raise NotImplementedError("play has not been implemented")
 
