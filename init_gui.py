@@ -2,7 +2,10 @@
 Main file: runs the game loop and updates the display
 TODO:
 - update text to be larger and display on multiple lines
+- replace numbers with letters for ace and royals
 - figure out why I need to call update so many times and fix it
+- disallow drawing from discard and immediately discarding
+- fix display when discard pile is empty
 """
 
 import sys, pygame
@@ -216,9 +219,15 @@ def main():
             #If they say rummy, and they don't have one, the other player gets to
             #see their hand. If they do have a rummy, they win and the game ends.
             #We need to implement a function to check if a player has a rummy.
-            if(game.check_goal_state(player1) is not None):
+            matches = game.check_goal_state(player1)
+            if(matches is not None):
                 msg = "You win!"
                 playing = False
+                print("YOU WIN!")
+                print([(c.value, c.suit) for c in player1.hand.contents])
+                print([(c.value, c.suit) for c in matches])
+                update_display(screen, background, p1_cards, discard_card, suit_imgs,
+                                val_imgs, game, font, msg, player1, tmp, None)
             else:
                 game.turn = game.player2
         # execute player 2's turn
@@ -235,9 +244,16 @@ def main():
                 + str(c_disc.value) + " of " + c_disc.suit + ".")
             update_display(screen, background, p1_cards, discard_card, suit_imgs,
                             val_imgs, game, font, msg, player1, tmp, None)
-            if(game.check_goal_state(player2) is not None):
+
+            matches = game.check_goal_state(player2)
+            if(matches is not None):
                 msg = "You lose! Player 2 has Rummy!"
                 playing = False
+                print("YOU LOSE!")
+                print([(c.value, c.suit) for c in player2.hand.contents])
+                print([(c.value, c.suit) for c in matches])
+                update_display(screen, background, p1_cards, discard_card, suit_imgs,
+                                val_imgs, game, font, msg, player1, tmp, None)
             else:
                 game.turn = game.player1
 
@@ -252,4 +268,4 @@ def main():
         #update_display(screen, background, p1_cards, discard_card, suit_imgs,
         #            val_imgs, game, font, msg, player1)
 
-    pygame.quit()
+    #pygame.quit()
