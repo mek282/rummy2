@@ -13,13 +13,15 @@ from operator import attrgetter
 
 random.seed()
 
+
 """ Represents the current state of the game. """
 class Game:
     def  __init__(self, game_deck, player1=None, player2=None):
         self.player1 = player1
         self.player2 = player2
 
-        self.last_move = None
+        self.last_draw = None # None if unknown, else the card that the most recent player picked up
+
         self.deck = game_deck
         self.discard_pile = Deck(0)
         self.discard_pile.add(self.deck.contents.pop())
@@ -75,8 +77,9 @@ class Player:
             recentCard = self.game_state.discard_pile.contents.pop()
             self.game_state.deck = self.game_state.discard_pile
             random.shuffle(self.game_state.deck.contents)
-            game.discard_pile.contents = Deck(0)
-            game.discard_pile.add(recentCard)
+            self.game_state.discard_pile = Deck(0)
+            self.game_state.discard_pile.add(recentCard)
+        self.game_state.last_draw = None
         return c
 
     """ Removes a card from discard_pile and add it to Player's hand. Returns
@@ -85,8 +88,10 @@ class Player:
         if len(self.game_state.discard_pile.contents) > 0:
             c = self.game_state.discard_pile.contents.pop()
             self.hand.add(c)
+            self.game_state.last_draw = c
             return c
         else:
+            self.game_state.last_draw = None
             return None
 
     """ Removes and returns a specific card from this Deck. Returns its index."""

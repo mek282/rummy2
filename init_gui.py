@@ -6,12 +6,13 @@ TODO:
 - figure out why I need to call update so many times and fix it
 - disallow drawing from discard and immediately discarding
 - fix display when discard pile is empty
+- display for a little before exiting upon win
 """
 
 import sys, pygame
 from objects import *
 from control import *
-from gametree import *
+from adversarial import *
 from heuristic import *
 from strategy import *
 from human import *
@@ -94,7 +95,7 @@ def main():
     deck = Deck()
     game = Game(deck)
 
-    player1 = Human(game, "test")
+    player1 = Control(game, "test")
     game.player1 = player1
     game.turn = player1
     player2 = Control(game, "test2")
@@ -232,6 +233,8 @@ def main():
                 game.turn = game.player2
         # execute player 2's turn
         elif game.turn == game.player2:
+            print("AI's turn")
+            print([(c.value, c.suit) for c in player2.hand.contents])
             d = game.recent_discard()
             c_draw = game.player2.play_draw()
             c_disc = game.player2.play_discard()
@@ -244,7 +247,7 @@ def main():
                 + str(c_disc.value) + " of " + c_disc.suit + ".")
             update_display(screen, background, p1_cards, discard_card, suit_imgs,
                             val_imgs, game, font, msg, player1, tmp, None)
-
+            print([(c.value, c.suit) for c in player2.hand.contents])
             matches = game.check_goal_state(player2)
             if(matches is not None):
                 msg = "You lose! Player 2 has Rummy!"

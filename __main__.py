@@ -6,7 +6,7 @@ command line to initialize a game.
 import init_gui
 from objects import *
 import control
-import gametree
+import adversarial
 import heuristic
 import strategy
 import human
