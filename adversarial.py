@@ -30,34 +30,36 @@ class Adversarial(Player):
         h = 0
         # add 10 points for every new run it would give the opponent
         current_matches = self.opponent_hand.find_runs()
-        current_matches.extend(self.opponent_hand.find_x_of_a_kind)
-        new_hand = self.opponent_hand + [card]
-        new_matches = self.new_hand.find_runs()
-        new_matches.extend(self.new_hand.find_x_of_a_kind())
+        current_matches.extend(self.opponent_hand.find_x_of_a_kind())
+        new_hand = Deck(0)
+        new_hand.contents = self.opponent_hand.contents[:]
+        new_hand.add(card)
+        new_matches = new_hand.find_runs()
+        new_matches.extend(new_hand.find_x_of_a_kind())
         h += (len(new_matches) - len(current_matches))
 
         # subtract 1 point if same value as a card they dislike
         # subtract 1 point if right next to a card they dislike
-        for dislike in self.opponent_dislikes:
+        for dislike in self.opponent_dislikes.contents:
             if card.value == dislike.value:
                 h -= 1
-            elif (card.value == dislike.value - 1 and card.suit = dislike.suit):
+            elif (card.value == dislike.value - 1 and card.suit == dislike.suit):
                 h -= 1
-            elif (card.value == dislike.value + 1 and card.suit = dislike.suit):
+            elif (card.value == dislike.value + 1 and card.suit == dislike.suit):
                 h -= 1
         # add 2 points if same value as a card they have
         # add 2 points if right next to a card they have
         # add 1 point if 1 away from a card they have
-        for like in self.opponent_hand:
+        for like in self.opponent_hand.contents:
             if card.value == like.value:
                 h += 2
-            elif (card.value == like.value - 1 and card.suit = like.suit):
+            elif (card.value == like.value - 1 and card.suit == like.suit):
                 h += 2
-            elif (card.value == like.value + 1 and card.suit = like.suit):
+            elif (card.value == like.value + 1 and card.suit == like.suit):
                 h += 2
-            elif (card.value == like.value - 2 and card.suit = like.suit):
+            elif (card.value == like.value - 2 and card.suit == like.suit):
                 h += 1
-            elif (card.value == like.value + 2 and card.suit = like.suit):
+            elif (card.value == like.value + 2 and card.suit == like.suit):
                 h += 1
 
         return h
@@ -65,8 +67,8 @@ class Adversarial(Player):
     """ Updates the opponent_hand and opponent_dislikes attributes based on the
         opponent's most recent move. """
     def process_opponent_move(self):
-        if self.game_state.recent_discard() in self.opponent_hand:
-            self.opponent.hand.remove(self.game_state.recent_discard())
+        if self.game_state.recent_discard() in self.opponent_hand.contents:
+            self.opponent_hand.contents.remove(self.game_state.recent_discard())
         self.opponent_dislikes.add(self.game_state.recent_discard())
         if self.game_state.last_draw is None:
             d = self.game_state.discard_pile.contents

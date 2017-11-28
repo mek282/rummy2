@@ -1,7 +1,7 @@
 """
-    The "Strategy" AI is a combination of features of both Heuristic and Game
-    Tree, attempting to simulate a more sophisticated strategy similar to how
-    a human with perfect memory would play the game.
+    The "Strategy" AI is a combination of features of both Heuristic and
+    Adversarial, attempting to simulate a more sophisticated strategy similar to
+    how a human with perfect memory would play the game.
 
     It maintains a list of cards the other player definitely has in their hand,
     as well as a list of "undesirable cards", i.e. cards the other player

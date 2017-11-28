@@ -95,10 +95,10 @@ def main():
     deck = Deck()
     game = Game(deck)
 
-    player1 = Control(game, "test")
+    player1 = Human(game, "test")
     game.player1 = player1
     game.turn = player1
-    player2 = Control(game, "test2")
+    player2 = Adversarial(game, "test2")
     game.player2 = player2
 
     # GUI initialization
