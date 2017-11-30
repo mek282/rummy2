@@ -7,6 +7,7 @@ TODO:
 - disallow drawing from discard and immediately discarding
 - fix display when discard pile is empty
 - display for a little before exiting upon win
+- add count of number of turns
 """
 
 import sys, pygame

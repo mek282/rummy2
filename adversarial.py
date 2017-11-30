@@ -36,7 +36,7 @@ class Adversarial(Player):
         new_hand.add(card)
         new_matches = new_hand.find_runs()
         new_matches.extend(new_hand.find_x_of_a_kind())
-        h += (len(new_matches) - len(current_matches))
+        h += 10*(len(new_matches) - len(current_matches))
 
         # subtract 1 point if same value as a card they dislike
         # subtract 1 point if right next to a card they dislike
