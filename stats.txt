@@ -1,1 +1,2 @@
-Player1,Player2,Winner,Moves_Taken
+Tester,Player1,Player2,Winner,Moves_Taken
+Mary,Human,Adversarial,Human,17

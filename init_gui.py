@@ -111,7 +111,7 @@ def main():
     player1 = Human(game, "test")
     game.player1 = player1
     game.turn = player1
-    player2 = Adversarial(game, "test2")
+    player2 = Heuristic(game, "test2")
     game.player2 = player2
 
     # GUI initialization
@@ -208,6 +208,7 @@ def main():
         if game.turn == game.player1:
             print("Time to draw")
             c = game.player1.play_draw()
+            print("Player 1 drew:")
             print(c.suit)
             print(c.value)
             if c is None:
@@ -221,6 +222,7 @@ def main():
                             val_imgs, game, font, msg, player1, tmp, c)
             print("Time to discard")
             c = game.player1.play_discard()
+            print("Player 1 discarded:")
             print(c.suit)
             print(c.value)
             if c is None:
@@ -248,11 +250,17 @@ def main():
                 game.turn = game.player2
         # execute player 2's turn
         elif game.turn == game.player2:
-            print("AI's turn")
+            print("AI's turn. AI Hand:")
             print([(c.value, c.suit) for c in player2.hand.contents])
             d = game.recent_discard()
             c_draw = game.player2.play_draw()
+            print("AI drew:")
+            print(c_draw.suit)
+            print(c_draw.value)
             c_disc = game.player2.play_discard()
+            print("AI discarded:")
+            print(c_disc.suit)
+            print(c_disc.value)
             if d == c_draw:
                 msg = ("P2 drew " + display_value(c_draw.value) + " of " + c_draw.suit
                 + " from the discard pile, and discarded " + str(c_disc.value) +
