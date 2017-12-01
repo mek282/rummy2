@@ -37,6 +37,7 @@ class Adversarial(Player):
         new_matches = new_hand.find_runs()
         new_matches.extend(new_hand.find_x_of_a_kind())
         h += 10*(len(new_matches) - len(current_matches))
+        ##SHOULD THIS BE WEIGHTED BASED ON 4 VERSUS 3?
 
         # subtract 1 point if same value as a card they dislike
         # subtract 1 point if right next to a card they dislike
