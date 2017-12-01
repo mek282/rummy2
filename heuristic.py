@@ -1,6 +1,3 @@
-# greedy best first search, where H(card) = fractional value indicating how many runs you'll have
-
-
 import sys, pygame
 from objects import *
 import init_gui

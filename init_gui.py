@@ -7,7 +7,6 @@ TODO:
 - disallow drawing from discard and immediately discarding
 - fix display when discard pile is empty
 - display for a little before exiting upon win
-- add count of number of turns
 """
 
 import sys, pygame
@@ -30,6 +29,19 @@ hand_locations = [[10, 280, 100, 150], [120, 280, 100, 150], [230, 280, 100, 150
 deck_location = [175, 100, 100, 150]
 discard_location = [285, 100, 100, 150]
 temp_location = [395, 100, 100, 150]
+
+def display_value(val):
+    if val == 1:
+        return "Ace"
+    elif val == 11:
+        return "Jack"
+    elif val == 12:
+        return "Queen"
+    elif val == 13:
+        return "King"
+    else:
+        return str(val)
+
 
 def render_card(suit, value, suit_imgs, val_imgs, bg):
     start_ind = 0
@@ -180,10 +192,11 @@ def main():
     val_imgs, game, font, msg, player1, tmp, None) # why does this fix things??? is there a better way??
 
     playing = True
-
+    turns = 0
     # *********************** MAIN GAME LOOP **********************************
     while playing:
         clock.tick(60)
+        turns += 1
         #print([(c.value, c.suit) for c in player1.hand.contents])
 
         update_display(screen, background, p1_cards, discard_card, suit_imgs,
@@ -226,6 +239,7 @@ def main():
                 msg = "You win!"
                 playing = False
                 print("YOU WIN!")
+                print(turns)
                 print([(c.value, c.suit) for c in player1.hand.contents])
                 print([(c.value, c.suit) for c in matches])
                 update_display(screen, background, p1_cards, discard_card, suit_imgs,
@@ -240,12 +254,12 @@ def main():
             c_draw = game.player2.play_draw()
             c_disc = game.player2.play_discard()
             if d == c_draw:
-                msg = ("P2 drew " + str(c_draw.value) + " of " + c_draw.suit
+                msg = ("P2 drew " + display_value(c_draw.value) + " of " + c_draw.suit
                 + " from the discard pile, and discarded " + str(c_disc.value) +
                 " of " + c_disc.suit + ".")
             else:
                 msg = ("P2 drew from the deck, and discarded "
-                + str(c_disc.value) + " of " + c_disc.suit + ".")
+                + display_value(c_disc.value) + " of " + c_disc.suit + ".")
             update_display(screen, background, p1_cards, discard_card, suit_imgs,
                             val_imgs, game, font, msg, player1, tmp, None)
             print([(c.value, c.suit) for c in player2.hand.contents])
@@ -254,6 +268,7 @@ def main():
                 msg = "You lose! Player 2 has Rummy!"
                 playing = False
                 print("YOU LOSE!")
+                print("turns")
                 print([(c.value, c.suit) for c in player2.hand.contents])
                 print([(c.value, c.suit) for c in matches])
                 update_display(screen, background, p1_cards, discard_card, suit_imgs,
