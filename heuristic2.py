@@ -13,24 +13,24 @@ class Heuristic(Player):
 
         for x in range(len(hand)):
             for y in range(x+1,len(hand)):
-                if x.value == y.value:
+                if hand[x].value == hand[y].value:
                     score += 2
-                elif (x.value == y.value - 1 and x.suit == y.suit):
+                elif (hand[x].value == hand[y].value - 1 and hand[x].suit == hand[y].suit):
                     score += 3
-                elif (x.value == y.value + 1 and x.suit == y.suit):
+                elif (hand[x].value == hand[y].value + 1 and hand[x].suit == hand[y].suit):
                     score += 3
-                elif (x.value == y.value - 2 and x.suit == y.suit):
+                elif (hand[x].value == hand[y].value - 2 and hand[x].suit == hand[y].suit):
                     score += 2
-                elif (x.value == y.value + 2 and x.suit == y.suit):
+                elif (hand[x].value == hand[y].value + 2 and hand[x].suit == hand[y].suit):
                     score += 2
-                elif (x.value == y.value - 3 and x.suit == y.suit):
+                elif (hand[x].value == hand[y].value - 3 and hand[x].suit == hand[y].suit):
                     score += 0.5
-                elif (x.value == y.value + 3 and x.suit == y.suit):
+                elif (hand[x].value == hand[y].value + 3 and hand[x].suit == hand[y].suit):
                     score += 0.5
 
         return score
 
-    """Determines whether to draw from the discard pile or the deck
+     """Determines whether to draw from the discard pile or the deck
     based on the h value of all possible hands with the card from the
     discard pile"""
     def best_draw_option(self):
@@ -63,21 +63,21 @@ class Heuristic(Player):
 
 
     def play_draw(self):
-        d = self.best_deck_option()
-        if d == 10:
+        self.d = self.best_draw_option()
+        if self.d == 10:
             return self.draw_deck()
         else:
             return self.draw_discard()
 
     def play_discard(self):
-        d = self.best_deck_option()
-        if d != 10:
-            c = self.hand.contents[d]
+        if self.d != 10:
+            c = self.hand.contents[self.d]
             self.discard(c)
             return c
 
         e = self.best_discard_option()
         c = self.hand.contents[e]
+        self.discard(c)
         return c
 
     def declare_rummy(self):
