@@ -10,42 +10,24 @@ class Heuristic(Player):
     """Calculates the value of the hand"""
     def h(self, hand):
         score = 0
-        handDeck = Deck(0)
-        handDeck.contents.extend(hand)
-        sets = handDeck.find_runs()
-        xOfAKind = handDeck.find_x_of_a_kind()
-        sets.extend(xOfAKind)
-        four = False
-        for s in sets:
-            if (len(s) > 3 and four == False):
-                four = True
-                score += 15
-            else:
-                score += 10
 
-        flattenedSet = []
-        for i in sets:
-            for j in i:
-                flattenedSet.append(j)
-
-        tempHand = []
-        for x in hand:
-            if x not in flattenedSet:
-                tempHand.append(x)
-
-        for x in range(len(tempHand)):
-            for y in range(x+1,len(tempHand)):
+        for x in range(len(hand)):
+            for y in range(x+1,len(hand)):
                 if x.value == y.value:
                     score += 2
                 elif (x.value == y.value - 1 and x.suit == y.suit):
-                    score += 2
+                    score += 3
                 elif (x.value == y.value + 1 and x.suit == y.suit):
-                    score += 2
+                    score += 3
                 elif (x.value == y.value - 2 and x.suit == y.suit):
-                    score += 1
+                    score += 2
                 elif (x.value == y.value + 2 and x.suit == y.suit):
-                    score += 1
-        ###haven't done if four = False. Don't know if it makes sense to include
+                    score += 2
+                elif (x.value == y.value - 3 and x.suit == y.suit):
+                    score += 0.5
+                elif (x.value == y.value + 3 and x.suit == y.suit):
+                    score += 0.5
+
         return score
 
     """Determines whether to draw from the discard pile or the deck
