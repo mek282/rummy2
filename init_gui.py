@@ -109,7 +109,7 @@ def main():
     deck = Deck()
     game = Game(deck)
 
-    player1 = Human(game, "test")
+    player1 = Heuristic(game, "test")
     game.player1 = player1
     game.turn = player1
     player2 = Heuristic2(game, "test2")
@@ -247,6 +247,7 @@ def main():
                 print([(c.value, c.suit) for c in matches])
                 update_display(screen, background, p1_cards, discard_card, suit_imgs,
                                 val_imgs, game, font, msg, player1, tmp, None)
+                return ("player1", turns)
             else:
                 game.turn = game.player2
         # execute player 2's turn
@@ -282,6 +283,7 @@ def main():
                 print([(c.value, c.suit) for c in matches])
                 update_display(screen, background, p1_cards, discard_card, suit_imgs,
                                 val_imgs, game, font, msg, player1, tmp, None)
+                return ("player2", turns)
             else:
                 game.turn = game.player1
 
