@@ -29,7 +29,7 @@ class Control(Player):
             return self.draw_discard()
 
     def play_discard(self):
-        i = random.randint(0,10)
+        i = random.randint(0,9)
         c = self.hand.contents[i]
         self.discard(c)
         return c

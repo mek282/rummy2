@@ -14,6 +14,7 @@ from objects import *
 from control import *
 from adversarial import *
 from heuristic import *
+from heuristic2 import *
 from strategy import *
 from human import *
 
@@ -111,7 +112,7 @@ def main():
     player1 = Human(game, "test")
     game.player1 = player1
     game.turn = player1
-    player2 = Heuristic(game, "test2")
+    player2 = Heuristic2(game, "test2")
     game.player2 = player2
 
     # GUI initialization
@@ -263,7 +264,7 @@ def main():
             print(c_disc.value)
             if d == c_draw:
                 msg = ("P2 drew " + display_value(c_draw.value) + " of " + c_draw.suit
-                + " from the discard pile, and discarded " + str(c_disc.value) +
+                + " from the discard pile, and discarded " + display_value(c_disc.value) +
                 " of " + c_disc.suit + ".")
             else:
                 msg = ("P2 drew from the deck, and discarded "
@@ -276,7 +277,7 @@ def main():
                 msg = "You lose! Player 2 has Rummy!"
                 playing = False
                 print("YOU LOSE!")
-                print("turns")
+                print(turns)
                 print([(c.value, c.suit) for c in player2.hand.contents])
                 print([(c.value, c.suit) for c in matches])
                 update_display(screen, background, p1_cards, discard_card, suit_imgs,
