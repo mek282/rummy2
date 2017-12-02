@@ -14,6 +14,7 @@ from objects import *
 from control import *
 from adversarial import *
 from heuristic import *
+from heuristic2 import *
 from strategy import *
 from human import *
 
@@ -108,10 +109,10 @@ def main():
     deck = Deck()
     game = Game(deck)
 
-    player1 = Human(game, "test")
+    player1 = Heuristic(game, "test")
     game.player1 = player1
     game.turn = player1
-    player2 = Control(game, "test2")
+    player2 = Heuristic2(game, "test2")
     game.player2 = player2
 
     # GUI initialization
@@ -246,6 +247,7 @@ def main():
                 print([(c.value, c.suit) for c in matches])
                 update_display(screen, background, p1_cards, discard_card, suit_imgs,
                                 val_imgs, game, font, msg, player1, tmp, None)
+                return ("player1", turns)
             else:
                 game.turn = game.player2
         # execute player 2's turn
@@ -263,7 +265,7 @@ def main():
             print(c_disc.value)
             if d == c_draw:
                 msg = ("P2 drew " + display_value(c_draw.value) + " of " + c_draw.suit
-                + " from the discard pile, and discarded " + str(c_disc.value) +
+                + " from the discard pile, and discarded " + display_value(c_disc.value) +
                 " of " + c_disc.suit + ".")
             else:
                 msg = ("P2 drew from the deck, and discarded "
@@ -276,11 +278,12 @@ def main():
                 msg = "You lose! Player 2 has Rummy!"
                 playing = False
                 print("YOU LOSE!")
-                print("turns")
+                print(turns)
                 print([(c.value, c.suit) for c in player2.hand.contents])
                 print([(c.value, c.suit) for c in matches])
                 update_display(screen, background, p1_cards, discard_card, suit_imgs,
                                 val_imgs, game, font, msg, player1, tmp, None)
+                return ("player2", turns)
             else:
                 game.turn = game.player1
 

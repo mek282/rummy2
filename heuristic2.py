@@ -3,7 +3,7 @@ from objects import *
 import init_gui
 import random
 
-class Heuristic(Player):
+class Heuristic2(Player):
     def __init__(self, game, name):
         Player.__init__(self, game, name)
 
@@ -30,7 +30,7 @@ class Heuristic(Player):
 
         return score
 
-     """Determines whether to draw from the discard pile or the deck
+    """Determines whether to draw from the discard pile or the deck
     based on the h value of all possible hands with the card from the
     discard pile"""
     def best_draw_option(self):
