@@ -111,7 +111,7 @@ def main():
     player1 = Human(game, "test")
     game.player1 = player1
     game.turn = player1
-    player2 = Heuristic(game, "test2")
+    player2 = Control(game, "test2")
     game.player2 = player2
 
     # GUI initialization
@@ -195,7 +195,7 @@ def main():
     turns = 0
     # *********************** MAIN GAME LOOP **********************************
     while playing:
-        clock.tick(60)
+        # clock.tick(200)
         turns += 1
         #print([(c.value, c.suit) for c in player1.hand.contents])
 
