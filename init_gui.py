@@ -47,15 +47,19 @@ def display_value(val):
 
 def render_card(suit, value, suit_imgs, val_imgs, bg):
     start_ind = 0
-    if suit == "Hearts":
+    if suit is None:
+        bg.blit(suit_imgs[4], (0,0))
+        bg.blit(suit_imgs[4], (50,100))
+        return
+    elif suit == "Hearts":
         start_ind += 13
         bg.blit(suit_imgs[0], (0,0))
-    if suit == "Diamonds":
+    elif suit == "Diamonds":
         start_ind += 13
         bg.blit(suit_imgs[1], (0,0))
-    if suit == "Spades":
+    elif suit == "Spades":
         bg.blit(suit_imgs[2], (0,0))
-    if suit == "Clubs":
+    elif suit == "Clubs":
         bg.blit(suit_imgs[3], (0,0))
     bg.blit(val_imgs[start_ind + value - 1], (50, 100))
 
@@ -83,8 +87,9 @@ def update_display(screen, background, p1_cards, discard_card, suit_imgs,
         top_of_discard = game.discard_pile.contents[len(game.discard_pile.contents) - 1]
         render_card(top_of_discard.suit, top_of_discard.value,
                     suit_imgs, val_imgs, discard_card)
-    #else:
-    #    discard_card.fill((150, 150, 150))
+    else:
+        render_card(None, None,
+                    suit_imgs, val_imgs, discard_card)
 
     #draw temp card
     background.blit(tmp, (temp_location[0], temp_location[1]))
@@ -153,9 +158,10 @@ def main():
     suit_imgs = [pygame.image.load("img/heart.png").convert(),
     pygame.image.load("img/diamond.png").convert(),
     pygame.image.load("img/spade.png").convert(),
-    pygame.image.load("img/club.png").convert()]
+    pygame.image.load("img/club.png").convert(),
+    pygame.image.load("img/blank.png").convert()]
 
-    for i in range(4):
+    for i in range(5):
         suit_imgs[i] = pygame.transform.scale(suit_imgs[i], (50, 50))
 
     val_imgs = [pygame.image.load("img/ba.png").convert(),
@@ -295,8 +301,6 @@ def main():
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 playing = False
 
-        # update display!
-        #update_display(screen, background, p1_cards, discard_card, suit_imgs,
-        #            val_imgs, game, font, msg, player1)
+
 
     #pygame.quit()
