@@ -29,9 +29,9 @@ hand_locations = [[10, 280, 100, 150], [120, 280, 100, 150], [230, 280, 100, 150
 [340, 280, 100, 150], [450, 280, 100, 150], [10, 440, 100, 150],
 [120, 440, 100, 150], [230, 440, 100, 150], [340, 440, 100, 150], [450, 440, 100, 150]]
 
-deck_location = [175, 100, 100, 150]
-discard_location = [285, 100, 100, 150]
-temp_location = [395, 100, 100, 150]
+deck_location = [230, 100, 100, 150]
+discard_location = [340, 100, 100, 150]
+temp_location = [560, 360, 100, 150]
 
 def display_value(val):
     if val == 1:
@@ -103,7 +103,7 @@ def update_display(screen, background, p1_cards, discard_card, suit_imgs,
     # write message
     text = font.render(msg, 1, (10, 10, 10))
     textpos = text.get_rect(centerx=background.get_width()/2, centery=50)
-    background.fill(GREEN, (0, 0, 560, 100))
+    background.fill(GREEN, (0, 0, 670, 100))
     background.blit(text, textpos)
 
     # update all
@@ -116,15 +116,15 @@ def main():
     deck = Deck()
     game = Game(deck)
 
-    player1 = Best_First(game, "test")
+    player1 = Human(game, "test")
     game.player1 = player1
     game.turn = player1
-    player2 = Heuristic(game, "test2")
+    player2 = Heuristic3(game, "test2")
     game.player2 = player2
 
     # GUI initialization
     pygame.init()
-    size = width, height = 560, 600
+    size = width, height = 670, 600
     screen = pygame.display.set_mode(size)
 
     background = pygame.Surface(screen.get_size()).convert()
@@ -204,7 +204,7 @@ def main():
     turns = 0
     # *********************** MAIN GAME LOOP **********************************
     while playing:
-        # clock.tick(200)
+        clock.tick(60)
         turns += 1
         #print([(c.value, c.suit) for c in player1.hand.contents])
 
@@ -295,7 +295,7 @@ def main():
             else:
                 game.turn = game.player1
 
-        # process new events - only on human's turn???
+        # TODO: make the quit screen loop once someone wins
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 playing = False
