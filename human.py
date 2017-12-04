@@ -19,6 +19,7 @@ temp_location = [395, 100, 100, 150]
 class Human(Player):
     def __init__(self, game, name):
         Player.__init__(self, game, name)
+        self.whichDeck = 0
 
     """ Returns the card the player chose to draw. """
     def play_draw(self):
@@ -38,8 +39,10 @@ class Human(Player):
                         if len(self.game_state.discard_pile.contents) == 0:
                             pass
                         else:
+                            self.whichDeck = 0
                             return self.draw_discard()
                     elif deck_card.collidepoint(x, y):
+                        self.whichDeck = 1
                         return self.draw_deck()
         return None
 
@@ -56,7 +59,7 @@ class Human(Player):
                     return
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     x, y = event.pos
-                    for i in range(11):
+                    for i in range(10 + self.whichDeck):
                         if cards[i].collidepoint(x, y):
                             c = self.hand.contents[i]
                             self.discard(c)
