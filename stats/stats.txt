@@ -33,3 +33,6 @@ Mary,Human,Heuristic2,Heuristic2,18
 Mary,Human,Heuristic2,Heuristic2,12
 Mary,Human,Heuristic2,Human,31
 Mary,Human,Heuristic2,Human,37
+Mary,Human,Best_First,Human,21
+Mary,Human,Best_First,Human,27
+Mary,Human,Best_First,Human,21
