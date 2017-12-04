@@ -19,7 +19,7 @@ class Heuristic3(Player):
 
         maxScoreOfSets = 0
         bestSetOfSets = [] ##list of lists
-
+        ##what about 3 sets of 3; how do you improve? how to keep track of a set of 4 in this case
         for i in range(len(sets)):
             tmp = sets[i]
             val = 0
