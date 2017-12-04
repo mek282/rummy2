@@ -11,3 +11,4 @@
     used by [other AI] when relevant.
 
 """
+#throw away a card after too many turns with no change

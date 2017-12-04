@@ -15,6 +15,7 @@ from control import *
 from adversarial import *
 from heuristic import *
 from heuristic2 import *
+from heuristic3 import *
 from strategy import *
 from human import *
 
@@ -109,10 +110,10 @@ def main():
     deck = Deck()
     game = Game(deck)
 
-    player1 = Heuristic(game, "test")
+    player1 = Heuristic3(game, "test")
     game.player1 = player1
     game.turn = player1
-    player2 = Heuristic2(game, "test2")
+    player2 = Heuristic(game, "test2")
     game.player2 = player2
 
     # GUI initialization
