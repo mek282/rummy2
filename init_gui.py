@@ -120,6 +120,7 @@ def main():
     game.player1 = player1
     game.turn = player1
     player2 = Heuristic3(game, "test2")
+
     game.player2 = player2
 
     # GUI initialization
