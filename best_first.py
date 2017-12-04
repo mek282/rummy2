@@ -8,16 +8,60 @@ def heu(hand):
     sets = handDeck.find_runs()
     xOfAKind = handDeck.find_x_of_a_kind()
     sets.extend(xOfAKind)
-    four = False
-    for s in sets:
-        if (len(s) > 3 and four == False):
-            four = True
-            score += 15
-        else:
-            score += 10
+
+    maxScoreOfSets = 0
+    bestSetOfSets = [] ##list of lists
+
+    for i in range(len(sets)):
+        tmp = sets[i]
+        count = 0
+        val = 0
+        if len(tmp) == 3:
+            val = 10
+        if len(tmp) == 4:
+            val = 15
+        if val > maxScoreOfSets:
+            maxScoreOfSets = val
+            bestSetOfSets = [tmp]
+
+    for i in range(len(sets)):
+        for j in range(i+1, len(sets)):
+            tmp = sets[i] + sets[j]
+            count = 0
+            val = 0
+            for card in tmp:
+                if tmp.count(card) == 1:
+                    count += 1
+            if count == len(tmp):
+                if len(tmp) == 6:
+                    val = 20
+                if len(tmp) == 7:
+                    val = 25
+                if val > maxScoreOfSets:
+                    maxScoreOfSets = val
+                    bestSetOfSets = [sets[i],sets[j]]
+
+    for i in range(len(sets)):
+        for j in range(i+1, len(sets)):
+            for k in range(i+2, len(sets)):
+                tmp = sets[i] + sets[j] + sets[k] ##what if length of sets not at least 3? problem?
+                count = 0
+                val = 0
+                if len(tmp) != 10:
+                    continue
+                for card in tmp:
+                    if tmp.count(card) == 1:
+                        count +=1
+                if count == 10:
+                    val = 35
+                    if val > maxScoreOfSets:
+                        maxScoreOfSets = val
+                        bestSetOfSets = [sets[i], sets[j], sets[k]]
+
+    score += maxScoreOfSets
 
     flattenedSet = []
-    for i in sets:
+    for i in bestSetOfSets:
         for j in i:
             flattenedSet.append(j)
 
@@ -38,8 +82,9 @@ def heu(hand):
                 score += 1
             elif (tempHand[x].value == tempHand[y].value + 2 and tempHand[x].suit == tempHand[y].suit):
                 score += 1
-    ###haven't done if four = False. Don't know if it makes sense to include
+
     return score
+
 
 
 class Node():
@@ -56,30 +101,40 @@ class Node():
         new_possibilities.contents = self.deck_possibilities.contents[:]
         for card in deck.contents:
             if card in new_possibilities.contents:
-                new_possibilities.contents.remove(card)
+                new_possibilities.contents.remove(card) #TODO - think about this
 
         child = Node(deck, new_possibilities)
-        print(child.value)
+        #print(child.value)
         child.parent = self
-
         self.children.append(child)
+
 
     def h(self, deck):
         if len(deck.contents) == 10:
             return heu(deck.contents)
-        else:
+        elif len(deck.contents) == 9:
             deck_len = len(self.deck_possibilities.contents)
             acc = 0.0
             for d in range(deck_len):
                 acc += heu(deck.contents + [self.deck_possibilities.contents[d]])
             return acc / deck_len
+        else:
+            deck_len = len(self.deck_possibilities.contents)
+            acc = 0.0
+            count = 0
+            for d in range(deck_len):
+                for e in range(d+1, deck_len):
+                    count += 1
+                    acc += heu(deck.contents + [self.deck_possibilities.contents[d]]
+                        + [self.deck_possibilities.contents[e]])
+            return acc / count
 
 
 class Best_First(Player):
     def __init__(self, game, name):
         Player.__init__(self, game, name)
         self.tree = Node(self.hand, None)
-        self.frontier = []
+        #self.frontier = []
         self.opponent_hand = Deck(0)
         self.best_hand = None
 
@@ -94,21 +149,21 @@ class Best_First(Player):
     def populate_tree(self, parent, layer):
         # add all possibilities after drawing discard
         if layer == 1:
-            print("Layer 1 Nodes")
+            #print("Layer 1 Nodes")
             c = self.game_state.recent_discard()
             for i in range(10):
-                hand = copy.deepcopy(self.hand)
+                hand = copy.deepcopy(parent.cards)
                 hand.contents[i] = c
                 parent.add_child(hand)
-            # add all possibilities after drawing draw
+            # add all possibilities after drawing deck
             for i in range(10):
-                hand = copy.deepcopy(self.hand)
+                hand = copy.deepcopy(parent.cards)
                 hand.contents.remove(hand.contents[i])
                 parent.add_child(hand)
         else:
-            print("Layer 2 Nodes")
-            for i in range(10):
-                hand = copy.deepcopy(self.hand)
+            #print("Layer 2 Nodes")
+            for i in range(len(parent.cards.contents)):
+                hand = copy.deepcopy(parent.cards)
                 hand.contents.remove(hand.contents[i])
                 parent.add_child(hand)
 
@@ -128,9 +183,9 @@ class Best_First(Player):
             deck_possibilities.contents.remove(c)
 
         self.tree = Node(self.hand, deck_possibilities)
-        print("Current hand: " + str(self.tree.value))
+        #print("Current hand: " + str(self.tree.value))
         #find out who to expand
-        self.populate_tree(self.tree, 1)
+        self.populate_tree(self.tree, 1) # TODO - add a check if we've won before expanding
         for c in self.tree.children:
             # expand all children who increase hand value
             if c.value > self.tree.value:

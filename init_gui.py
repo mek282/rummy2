@@ -116,7 +116,7 @@ def main():
     deck = Deck()
     game = Game(deck)
 
-    player1 = Heuristic3(game, "test")
+    player1 = Best_First(game, "test")
     game.player1 = player1
     game.turn = player1
     player2 = Adversarial(game, "test2")

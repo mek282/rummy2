@@ -36,3 +36,4 @@ Mary,Human,Heuristic2,Human,37
 Mary,Human,Best_First,Human,21
 Mary,Human,Best_First,Human,27
 Mary,Human,Best_First,Human,21
+Mary,Human,Best_First,Human,13

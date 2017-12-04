@@ -2,11 +2,13 @@ import csv
 import init_gui as ig
 
 
+
 player1 = "Heuristic3"
 player2 = "Adversarial"
 
 with open("heuristic3_adv_tests.csv", "a") as f:
     for i in range(50):
+
         win = ig.main()
         winner = player1
         if win[0] == "player2":
