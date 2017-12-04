@@ -59,6 +59,7 @@ class Node():
                 new_possibilities.contents.remove(card)
 
         child = Node(deck, new_possibilities)
+        print(child.value)
         child.parent = self
 
         self.children.append(child)
@@ -90,18 +91,27 @@ class Best_First(Player):
             self.opponent_hand.add(self.game_state.last_draw)
 
 
-    def populate_tree(self, parent):
+    def populate_tree(self, parent, layer):
         # add all possibilities after drawing discard
-        c = self.game_state.recent_discard()
-        for i in range(10):
-            hand = copy.deepcopy(self.hand)
-            hand.contents[i] = c
-            parent.add_child(hand)
-        # add all possibilities after drawing draw
-        for i in range(10):
-            hand = copy.deepcopy(self.hand)
-            hand.contents.remove(hand.contents[i])
-            parent.add_child(hand)
+        if layer == 1:
+            print("Layer 1 Nodes")
+            c = self.game_state.recent_discard()
+            for i in range(10):
+                hand = copy.deepcopy(self.hand)
+                hand.contents[i] = c
+                parent.add_child(hand)
+            # add all possibilities after drawing draw
+            for i in range(10):
+                hand = copy.deepcopy(self.hand)
+                hand.contents.remove(hand.contents[i])
+                parent.add_child(hand)
+        else:
+            print("Layer 2 Nodes")
+            for i in range(10):
+                hand = copy.deepcopy(self.hand)
+                hand.contents.remove(hand.contents[i])
+                parent.add_child(hand)
+
 
 
     def play_draw(self):
@@ -118,13 +128,13 @@ class Best_First(Player):
             deck_possibilities.contents.remove(c)
 
         self.tree = Node(self.hand, deck_possibilities)
-
+        print("Current hand: " + str(self.tree.value))
         #find out who to expand
-        self.populate_tree(self.tree)
+        self.populate_tree(self.tree, 1)
         for c in self.tree.children:
             # expand all children who increase hand value
             if c.value > self.tree.value:
-                self.populate_tree(c)
+                self.populate_tree(c, 2)
         # find the max value in the second layer
         max_val = 0
         parent = None
