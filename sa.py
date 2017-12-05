@@ -3,10 +3,12 @@ from objects import *
 import init_gui
 import random
 
-class Heuristic4(Player):
+class SA(Player):
     def __init__(self, game, name):
         Player.__init__(self, game, name)
         self.d = 10
+        self.stuck = 0
+        self.turns = 0
 
     """Calculates the value of the hand"""
     def h(self, hand):
@@ -16,11 +18,10 @@ class Heuristic4(Player):
         sets = handDeck.find_runs()
         xOfAKind = handDeck.find_x_of_a_kind()
         sets.extend(xOfAKind)
-        four = False
 
         maxScoreOfSets = 0
         bestSetOfSets = [] ##list of lists
-        ##what about 3 sets of 3; how do you improve? how to keep track of a set of 4 in this case
+
         for i in range(len(sets)):
             tmp = sets[i]
             val = 0
@@ -68,16 +69,13 @@ class Heuristic4(Player):
 
         score += maxScoreOfSets
 
-        for b in bestSetOfSets:
-            if len(b) == 4:
-                four = True
-
-        firstlast = []
-        for i in bestSetOfSets:
-            if len(i) == 3:
-                firstlast.append(i[0])
-                firstlast.append(i[2])
-
+        # four = False
+        # for s in sets:
+        #     if (len(s) > 3 and four == False):
+        #         four = True
+        #         score += 15
+        #     else:
+        #         score += 10
 
         flattenedSet = []
         for i in bestSetOfSets:
@@ -101,21 +99,7 @@ class Heuristic4(Player):
                     score += 1
                 elif (tempHand[x].value == tempHand[y].value + 2 and tempHand[x].suit == tempHand[y].suit):
                     score += 1
-
-        if not four:
-            for x in range(len(tempHand)):
-                for y in firstlast:
-                    if tempHand[x].value == y.value:
-                        score += 2
-                    elif (tempHand[x].value == y.value - 1 and tempHand[x].suit == y.suit):
-                        score += 2
-                    elif (tempHand[x].value == y.value + 1 and tempHand[x].suit == y.suit):
-                        score += 2
-                    elif (tempHand[x].value == y.value - 2 and tempHand[x].suit == y.suit):
-                        score += 1
-                    elif (tempHand[x].value == y.value + 2 and tempHand[x].suit == y.suit):
-                        score += 1
-
+        ###haven't done if four = False. Don't know if it makes sense to include
         return score
 
     """Determines whether to draw from the discard pile or the deck
@@ -151,6 +135,7 @@ class Heuristic4(Player):
 
 
     def play_draw(self):
+        self.turns += 1
         self.d = self.best_draw_option()
         if self.d == 10:
             return self.draw_deck()
@@ -164,6 +149,15 @@ class Heuristic4(Player):
             return c
 
         e = self.best_discard_option()
+
+        if e == 10:
+            self.stuck += 1
+            if self.stuck == 20:
+                e = random.randint(0,9)
+                self.stuck = 0
+        else:
+            self.stuck = 0
+
         c = self.hand.contents[e]
         self.discard(c)
         return c
