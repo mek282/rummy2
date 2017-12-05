@@ -1,0 +1,42 @@
+Viable AI List:
+Adversarial
+Best_First
+Control
+Heuristic
+Heuristic2
+Heuristic3
+SA*
+SA2*
+SA3*
+Strategy*
+
+Mary:
+100 runs each:
+Control vs Best_First
+Control vs Heuristic
+Control vs heuristic2
+Control vs heuristic3
+Control vs SA
+Control vs Strategy
+
+100 runs:
+Adversarial vs Best_First
+Adversarial vs Heuristic
+Adversarial vs heuristic2
+Adversarial vs heuristic3
+Adversarial vs SA
+Adversarial vs Strategy
+
+200 runs:
+Best_first vs Heuristic3
+-------------------------------------------
+Kanchan:
+500 runs:
+Heuristic vs heuristic2
+heuristic2 vs Heuristic3
+heuristic vs Heuristic3
+
+500 runs:
+SA vs Heuristic3
+strategy vs Heuristic3
+strategy vs SA

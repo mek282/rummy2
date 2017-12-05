@@ -6,7 +6,7 @@ import init_gui as ig
 player1 = "SA"
 player2 = "Heuristic3"
 
-with open("sa2_h3_tests_5.csv", "a") as f:
+with open("final_"+player1+"_vs_"+player2+".csv", "a") as f:
     for i in range(200):
 
         win = ig.main()
