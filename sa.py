@@ -152,7 +152,7 @@ class SA(Player):
 
         if e == 10:
             self.stuck += 1
-            if self.stuck == 20:
+            if self.stuck == 5:
                 e = random.randint(0,9)
                 self.stuck = 0
         else:
