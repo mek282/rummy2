@@ -12,23 +12,23 @@ Strategy*
 
 Mary:
 100 runs each:
-Control vs Best_First
-Control vs Heuristic
-Control vs heuristic2
-Control vs heuristic3
-Control vs SA
-Control vs Strategy
+Control vs Best_First X
+Control vs Heuristic X - it got stuck after 49, I could keep running it but I feel like that's a result in itself
+Control vs heuristic2 X - got stuck after 29
+Control vs heuristic3 X
+Control vs SA*
+Control vs Strategy*
 
 100 runs:
-Adversarial vs Best_First
-Adversarial vs Heuristic
-Adversarial vs heuristic2
-Adversarial vs heuristic3
-Adversarial vs SA
-Adversarial vs Strategy
+Adversarial vs Best_First X
+Adversarial vs Heuristic X - guessing it will get stuck just like the others
+Adversarial vs heuristic2 X but didn't complete kept getting stuck
+Adversarial vs heuristic3 X but didn't complete, kept getting stuck
+Adversarial vs SA*
+Adversarial vs Strategy*
 
 200 runs:
-Best_first vs Heuristic3
+Best_first vs Heuristic3 X
 -------------------------------------------
 Kanchan:
 500 runs:
