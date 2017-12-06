@@ -1,5 +1,5 @@
 """
-
+Human player. Takes input and output from the GUI.
 """
 
 import sys
