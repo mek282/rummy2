@@ -18,6 +18,7 @@ from heuristic2 import *
 from heuristic3 import *
 from heuristic4 import *
 from sa import *
+from sa2 import *
 from strategy import *
 from human import *
 from best_first import *
@@ -118,7 +119,7 @@ def main():
     deck = Deck()
     game = Game(deck)
 
-    player1 = SA(game, "test")
+    player1 = SA2(game, "test")
     game.player1 = player1
     game.turn = player1
     player2 = Heuristic3(game, "test2")

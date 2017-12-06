@@ -3,7 +3,7 @@ from objects import *
 import init_gui
 import random
 
-class SA(Player):
+class SA2(Player):
     def __init__(self, game, name):
         Player.__init__(self, game, name)
         self.d = 10
@@ -153,9 +153,14 @@ class SA(Player):
 
         if e == 10:
             self.stuck += 1
-            if self.stuck == 10:
-                e = random.randint(0,9)
-                self.stuck = 0
+            if self.turns < 20:
+                if self.stuck == 5:
+                    e = random.randint(0,9)
+                    self.stuck = 0
+            else:
+                if self.stuck == 10:
+                    e = random.randint(0,9)
+                    self.stuck = 0
         else:
             self.stuck = 0
 
