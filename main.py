@@ -18,6 +18,7 @@ from heuristic2 import *
 from heuristic3 import *
 from heuristic4 import *
 from sa import *
+from sa2 import *
 from strategy import *
 from human import *
 from best_first import *
