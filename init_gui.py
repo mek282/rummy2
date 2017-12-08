@@ -18,8 +18,14 @@ from heuristic2 import *
 from heuristic3 import *
 from heuristic4 import *
 from sa import *
+from sa1 import *
 from sa2 import *
+from sa3 import *
+from sa4 import *
+from sa5 import *
 from strategy import *
+from sastrategy import *
+from sastrategy1 import *
 from human import *
 from best_first import *
 
@@ -119,10 +125,10 @@ def main():
     deck = Deck()
     game = Game(deck)
 
-    player1 = SA2(game, "test")
+    player1 = SAStrategy1(game, "test")
     game.player1 = player1
     game.turn = player1
-    player2 = Control(game, "test2")
+    player2 = Strategy(game, "test2")
     game.player2 = player2
 
     # GUI initialization

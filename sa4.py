@@ -3,12 +3,13 @@ from objects import *
 import init_gui
 import random
 
-class SA2(Player):
+class SA4(Player):
     def __init__(self, game, name):
         Player.__init__(self, game, name)
         self.d = 10
         self.stuck = 0
         self.turns = 0
+        self.handval = 0
 
     """Calculates the value of the hand"""
     def h(self, hand):
@@ -115,6 +116,10 @@ class SA2(Player):
             if newH > currentH:
                 currentH = newH
                 d = x
+        if d != 10:
+            if self.handval == currentH:
+                self.stuck += 1
+            self.handval = currentH
         return d
 
     """Determines which card to discard based on the h value of all
@@ -131,6 +136,9 @@ class SA2(Player):
             if newH > currentH:
                 currentH = newH
                 d = x
+        if self.handval == currentH:
+            self.stuck += 1
+        self.handval = currentH
         return d
 
 
@@ -145,20 +153,18 @@ class SA2(Player):
     def play_discard(self):
         if self.d != 10:
             c = self.hand.contents[self.d]
-            self.stuck = 0
             self.discard(c)
             return c
 
         e = self.best_discard_option()
 
         if e == 10:
-            self.stuck += 1
-            if self.turns > 20:
+            if self.handval > 25:
                 if self.stuck == 7:
                     e = random.randint(0,9)
                     self.stuck = 0
             else:
-                if self.stuck == 10:
+                if self.stuck == 4:
                     e = random.randint(0,9)
                     self.stuck = 0
         else:

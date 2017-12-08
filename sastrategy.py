@@ -14,7 +14,7 @@
 from sa import *
 from objects import *
 
-class Strategy(SA):
+class SAStrategy(SA):
     def __init__(self, game, name):
         SA.__init__(self, game, name)
         self.opponent_hand = Deck(0)
@@ -22,6 +22,7 @@ class Strategy(SA):
         self.deck_possibilities = Deck(0)
         self.discard = Deck(0)
         self.drew_deck = 0
+        self.stuck = 0
 
 
     def adversarial_h(self, card):
@@ -124,6 +125,16 @@ class Strategy(SA):
             discard_options.remove(discard_options[10])
 
         best_ind = my_h_vals.index(max(my_h_vals))
+
+        if best_ind == 10:
+            self.stuck += 1
+        else:
+            self.stuck = 0
+
+        if self.stuck == 10:
+            my_h_vals.remove(my_h_vals[best_ind])
+            best_ind = my_h_vals.index(max(my_h_vals))
+            self.stuck = 0
 
         # TODO - add in SA component
 
