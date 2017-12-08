@@ -38,7 +38,6 @@ class Game:
         matches = player.hand.find_runs()
         matches.extend(player.hand.find_x_of_a_kind())
 
-        # TODO: test this - might be some index issues
         for i in range(len(matches)):
             for j in range(i+1, len(matches)):
                 for k in range(i+2, len(matches)):
