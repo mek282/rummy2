@@ -1,8 +1,8 @@
 import csv
-import init_gui as ig
+import main as ig
 
-player1 = "Best_First"
-player2 = "Control"
+player1 = "Heuristic2"
+player2 = "Heuristic3"
 
 with open("final_"+player1+"_vs_"+player2+".csv", "a") as f:
     for i in range(100):

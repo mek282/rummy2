@@ -1,6 +1,6 @@
 import sys, pygame
 from objects import *
-import init_gui
+#import init_gui
 import random
 
 class Heuristic3(Player):

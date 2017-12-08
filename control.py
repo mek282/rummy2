@@ -12,7 +12,7 @@ Make sure, can't discard if it drew from the open deck
 
 import sys, pygame
 from objects import *
-import init_gui
+#import init_gui
 import random
 
 class Control(Player):

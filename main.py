@@ -119,7 +119,7 @@ def main():
     deck = Deck()
     game = Game(deck)
 
-    player1 = Human(game, "test")
+    player1 = Heuristic2(game, "test")
     game.player1 = player1
     game.turn = player1
     player2 = Heuristic3(game, "test2")
