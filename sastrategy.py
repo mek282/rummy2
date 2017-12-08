@@ -107,24 +107,23 @@ class SAStrategy(SA):
 
 
     def play_discard(self):
+        print("Stuck value")
+        print(self.stuck)
+
         discard_options = self.hand.contents[:]
-        if len(self.opponent_hand.contents) == 0:
-            my_h_vals = self.best_discard_option()
-            best_ind = my_h_vals.index(max(my_h_vals))
-            SA.discard(self,discard_options[best_ind])
-            return discard_options[best_ind]
-
-        opponent_h_vals = []
-        for i in range(10 + self.drew_deck):
-            opponent_h_vals.append(self.adversarial_h(self.hand.contents[i]))
-
         my_h_vals = self.best_discard_option()
+        best_ind = my_h_vals.index(max(my_h_vals))
 
+        # can't discard if we just drew from disc pile
         if not self.drew_deck:
             my_h_vals.remove(my_h_vals[10])
             discard_options.remove(discard_options[10])
+            best_ind = my_h_vals.index(max(my_h_vals))
 
-        best_ind = my_h_vals.index(max(my_h_vals))
+        if my_h_vals[best_ind] == 35:
+            c = discard_options[best_ind]
+            SA.discard(self, c)
+            return c
 
         if best_ind == 10:
             self.stuck += 1
@@ -133,19 +132,27 @@ class SAStrategy(SA):
 
         if self.stuck == 10:
             my_h_vals.remove(my_h_vals[best_ind])
+            discard_options.remove(discard_options[best_ind])
             best_ind = my_h_vals.index(max(my_h_vals))
             self.stuck = 0
 
-        # TODO - add in SA component
+        if len(self.opponent_hand.contents) == 0:
+            c = discard_options[best_ind]
+            SA.discard(self, c)
+            return c
+
+        opponent_h_vals = []
+        for i in range(len(discard_options)):
+            opponent_h_vals.append(self.adversarial_h(discard_options[i]))
 
         orig_best_ind = best_ind
-
         orig_discard_options = discard_options[:]
 
         while discard_options != []:
-            if discard_options[best_ind] == 35:
-                SA.discard(self,discard_options[best_ind])
-                return discard_options[best_ind]
+            if my_h_vals[best_ind] == 35:
+                c = discard_options[best_ind]
+                SA.discard(self, c)
+                return c
 
             if opponent_h_vals[best_ind] >= 10:
                 my_h_vals.remove(my_h_vals[best_ind])
@@ -154,14 +161,12 @@ class SAStrategy(SA):
                 if len(my_h_vals) == 0:
                     best_ind = orig_best_ind
                     break
-                # best_ind = my_h_vals.index(min(my_h_vals))
                 best_ind = my_h_vals.index(max(my_h_vals))
             else:
-                SA.discard(self,discard_options[best_ind])
-                return discard_options[best_ind]
+                c = discard_options[best_ind]
+                SA.discard(self,c)
+                return c
 
-        # SA.discard(self,discard_options[best_ind])
-        # return discard_options[best_ind]
-
-        SA.discard(self,orig_discard_options[best_ind])
-        return orig_discard_options[best_ind]
+        c = orig_discard_options[best_ind]
+        SA.discard(self,c)
+        return c

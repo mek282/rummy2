@@ -32,11 +32,17 @@ Best_first vs Heuristic3 X
 -------------------------------------------
 Kanchan:
 500 runs:
-Heuristic vs heuristic2
-heuristic2 vs Heuristic3
-heuristic vs Heuristic3
+Heuristic vs heuristic2 X
+heuristic2 vs Heuristic3 X
+heuristic vs Heuristic3 X
 
 500 runs:
 SA vs Heuristic3
 strategy vs Heuristic3
 strategy vs SA
+
+
+SA vs adversarial X
+SA vs control X
+strategy vs adversarial X 
+strategy vs control
