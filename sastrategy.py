@@ -126,7 +126,7 @@ class SAStrategy(Heuristic3):
         else:
             self.stuck = 0
 
-        if self.stuck == 20:
+        if self.stuck == 10:
             del my_h_vals[best_ind]
             del discard_options[best_ind]
             best_ind = my_h_vals.index(max(my_h_vals))
