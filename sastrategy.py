@@ -11,12 +11,12 @@
     used by [other AI] when relevant.
 
 """
-from sa import *
+from heuristic3 import *
 from objects import *
 
-class SAStrategy(SA):
+class SAStrategy(Heuristic3):
     def __init__(self, game, name):
-        SA.__init__(self, game, name)
+        Heuristic3.__init__(self, game, name)
         self.opponent_hand = Deck(0)
         self.opponent_dislikes = Deck(0)
         self.deck_possibilities = Deck(0)
@@ -79,15 +79,12 @@ class SAStrategy(SA):
         else:
             self.opponent_hand.add(self.game_state.last_draw)
 
-        # TODO - update dislike pile
-
 
     """Determines the order in which we want to discard all cards in our hand"""
     def best_discard_option(self):
         tempHand = self.hand.contents[:10]
         newCard = self.hand.contents[10]
         currentH = self.h(tempHand)
-        d = 10
         h_vals = []
         for x in range(len(tempHand)):
             tempHand = self.hand.contents[:10]
@@ -100,29 +97,28 @@ class SAStrategy(SA):
 
     def play_draw(self):
         self.process_opponent_move()
-        d = self.game_state.recent_discard()
-        c = SA.play_draw(self)
-        self.drew_deck = (d != c)
+        dis = self.game_state.recent_discard()
+        c = Heuristic3.play_draw(self)
+        self.drew_deck = (dis != c)
         return c
 
 
     def play_discard(self):
-        print("Stuck value")
-        print(self.stuck)
-
+        #print("opponent hand")
+        #print([(c.value, c.suit) for c in self.opponent_hand.contents])
         discard_options = self.hand.contents[:]
         my_h_vals = self.best_discard_option()
         best_ind = my_h_vals.index(max(my_h_vals))
 
         # can't discard if we just drew from disc pile
         if not self.drew_deck:
-            my_h_vals.remove(my_h_vals[10])
-            discard_options.remove(discard_options[10])
+            del my_h_vals[10]
+            del discard_options[10]
             best_ind = my_h_vals.index(max(my_h_vals))
 
         if my_h_vals[best_ind] == 35:
             c = discard_options[best_ind]
-            SA.discard(self, c)
+            Heuristic3.discard(self, c)
             return c
 
         if best_ind == 10:
@@ -130,15 +126,15 @@ class SAStrategy(SA):
         else:
             self.stuck = 0
 
-        if self.stuck == 10:
-            my_h_vals.remove(my_h_vals[best_ind])
-            discard_options.remove(discard_options[best_ind])
+        if self.stuck == 20:
+            del my_h_vals[best_ind]
+            del discard_options[best_ind]
             best_ind = my_h_vals.index(max(my_h_vals))
             self.stuck = 0
 
         if len(self.opponent_hand.contents) == 0:
             c = discard_options[best_ind]
-            SA.discard(self, c)
+            Heuristic3.discard(self, c)
             return c
 
         opponent_h_vals = []
@@ -151,22 +147,22 @@ class SAStrategy(SA):
         while discard_options != []:
             if my_h_vals[best_ind] == 35:
                 c = discard_options[best_ind]
-                SA.discard(self, c)
+                Heuristic3.discard(self, c)
                 return c
 
             if opponent_h_vals[best_ind] >= 10:
-                my_h_vals.remove(my_h_vals[best_ind])
-                discard_options.remove(discard_options[best_ind])
-                opponent_h_vals.remove(opponent_h_vals[best_ind])
+                del my_h_vals[best_ind]
+                del discard_options[best_ind]
+                del opponent_h_vals[best_ind]
                 if len(my_h_vals) == 0:
                     best_ind = orig_best_ind
                     break
                 best_ind = my_h_vals.index(max(my_h_vals))
             else:
                 c = discard_options[best_ind]
-                SA.discard(self,c)
+                Heuristic3.discard(self,c)
                 return c
 
         c = orig_discard_options[best_ind]
-        SA.discard(self,c)
+        Heuristic3.discard(self,c)
         return c

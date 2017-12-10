@@ -2,7 +2,7 @@ import csv
 import main as ig
 
 player1 = "SAStrategy"
-player2 = "Adversarial"
+player2 = "Heuristic3"
 
 with open("final_"+player1+"_vs_"+player2+".csv", "a") as f:
     for i in range(100):
