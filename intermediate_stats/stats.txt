@@ -37,3 +37,15 @@ Mary,Human,Best_First,Human,21
 Mary,Human,Best_First,Human,27
 Mary,Human,Best_First,Human,21
 Mary,Human,Best_First,Human,13
+
+Mary,SAStrategy,SAStrategy
+Mary,SAStrategy,SAStrategy
+Mary,SAStrategy,Mary
+Mary,SAStrategy,SAStrategy,22
+Mary,SAStrategy,Mary,21
+Mary,SAStrategy,SAStrategy,10
+Mary,SAStrategy,Mary,13
+Mary,SAStrategy,SAStrategy,10
+Mary,SAStrategy,Mary,15
+
+Andrew,SAStrategy,SAStrategy,26

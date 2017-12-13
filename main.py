@@ -1,12 +1,5 @@
 """
 Main file: runs the game loop and updates the display
-TODO:
-- update text to be larger and display on multiple lines
-- replace numbers with letters for ace and royals
-- figure out why I need to call update so many times and fix it
-- disallow drawing from discard and immediately discarding
-- fix display when discard pile is empty
-- display for a little before exiting upon win
 """
 
 import sys, pygame
@@ -125,10 +118,10 @@ def main():
     deck = Deck()
     game = Game(deck)
 
-    player1 = SAStrategy(game, "test")
+    player1 = Adversarial(game, "test")
     game.player1 = player1
     game.turn = player1
-    player2 = Strategy(game, "test2")
+    player2 = SAStrategy(game, "test2")
     game.player2 = player2
 
     # GUI initialization
@@ -163,7 +156,6 @@ def main():
 
     for c in range(10):
         p1_cards[c].fill(WHITE)
-        #background.blit(p1_cards[c], (hand_locations[c][0], hand_locations[c][1]))
 
     suit_imgs = [pygame.image.load("img/heart.png").convert(),
     pygame.image.load("img/diamond.png").convert(),
@@ -207,7 +199,7 @@ def main():
     update_display(screen, background, p1_cards, discard_card, suit_imgs,
     val_imgs, game, font, msg, player1, tmp, None)
     update_display(screen, background, p1_cards, discard_card, suit_imgs,
-    val_imgs, game, font, msg, player1, tmp, None) # why does this fix things??? is there a better way??
+    val_imgs, game, font, msg, player1, tmp, None)
 
     playing = True
     turns = 0
@@ -215,7 +207,6 @@ def main():
     while playing:
         clock.tick(60)
         turns += 1
-        #print([(c.value, c.suit) for c in player1.hand.contents])
 
         update_display(screen, background, p1_cards, discard_card, suit_imgs,
         val_imgs, game, font, msg, player1, tmp, None)
@@ -224,6 +215,8 @@ def main():
 
         # execute player 1's turn
         if game.turn == game.player1:
+            print("Player 1's turn. P1's hand:")
+            print([(c.value, c.suit) for c in player2.hand.contents])
             print("Time to draw")
             c = game.player1.play_draw()
             print("Player 1 drew:")
@@ -250,17 +243,12 @@ def main():
             update_display(screen, background, p1_cards, discard_card, suit_imgs,
                             val_imgs, game, font, msg, player1, tmp, None)
 
-            #At the end of a play, each player has the opportunity to say rummy.
-            #If they say rummy, and they don't have one, the other player gets to
-            #see their hand. If they do have a rummy, they win and the game ends.
-            #We need to implement a function to check if a player has a rummy.
             matches = game.check_goal_state(player1)
             if(matches is not None):
                 msg = "You win!"
                 playing = False
                 print("YOU WIN!")
-                print(turns)
-                print([(c.value, c.suit) for c in player1.hand.contents])
+                print("You won in "+str(turns)+" turns!")
                 print([(c.value, c.suit) for c in matches])
                 update_display(screen, background, p1_cards, discard_card, suit_imgs,
                                 val_imgs, game, font, msg, player1, tmp, None)
@@ -269,7 +257,7 @@ def main():
                 game.turn = game.player2
         # execute player 2's turn
         elif game.turn == game.player2:
-            print("AI's turn. AI Hand:")
+            print("AI's turn. AI's Hand:")
             print([(c.value, c.suit) for c in player2.hand.contents])
             d = game.recent_discard()
             c_draw = game.player2.play_draw()
@@ -289,14 +277,12 @@ def main():
                 + display_value(c_disc.value) + " of " + c_disc.suit + ".")
             update_display(screen, background, p1_cards, discard_card, suit_imgs,
                             val_imgs, game, font, msg, player1, tmp, None)
-            print([(c.value, c.suit) for c in player2.hand.contents])
             matches = game.check_goal_state(player2)
             if(matches is not None):
                 msg = "You lose! Player 2 has Rummy!"
                 playing = False
                 print("YOU LOSE!")
-                print(turns)
-                print([(c.value, c.suit) for c in player2.hand.contents])
+                print("Your opponent won in "+str(turns)+" turns!")
                 print([(c.value, c.suit) for c in matches])
                 update_display(screen, background, p1_cards, discard_card, suit_imgs,
                                 val_imgs, game, font, msg, player1, tmp, None)
@@ -304,13 +290,10 @@ def main():
             else:
                 game.turn = game.player1
 
-        # TODO: make the quit screen loop once someone wins
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 playing = False
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 playing = False
 
-
 #main()
-    #pygame.quit()

@@ -104,8 +104,6 @@ class SAStrategy(Heuristic3):
 
 
     def play_discard(self):
-        #print("opponent hand")
-        #print([(c.value, c.suit) for c in self.opponent_hand.contents])
         discard_options = self.hand.contents[:]
         my_h_vals = self.best_discard_option()
         best_ind = my_h_vals.index(max(my_h_vals))

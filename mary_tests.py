@@ -1,11 +1,11 @@
 import csv
 import main as ig
 
-player1 = "SAStrategy"
-player2 = "Strategy"
+player1 = "Adversarial"
+player2 = "SAStrategy"
 
 with open("final_"+player1+"_vs_"+player2+".csv", "a") as f:
-    for i in range(200):
+    for i in range(100):
 
         win = ig.main()
         winner = player1

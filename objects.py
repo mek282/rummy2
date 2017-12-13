@@ -25,8 +25,6 @@ class Game:
         self.deck = game_deck
         self.discard_pile = Deck(0)
         self.discard_pile.add(self.deck.contents.pop())
-        #print(self.discard_pile.contents[0].suit)
-        #print(self.discard_pile.contents[0].value)
         self.turn = player1
 
     def recent_discard(self):
@@ -52,9 +50,6 @@ class Game:
                         return tmp
         return None
 
-    def end():
-        pass
-        # TODO: print credits
 
 
 """ Abstract class representing a Player."""
