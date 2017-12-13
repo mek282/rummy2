@@ -47,5 +47,8 @@ Mary,SAStrategy,SAStrategy,10
 Mary,SAStrategy,Mary,13
 Mary,SAStrategy,SAStrategy,10
 Mary,SAStrategy,Mary,15
+Mary,SAStrategy,SAStrategy,12
+Mary,SAStrategy,SAStrategy,18
+Mary,SAStrategy,SAStrategy,12
 
 Andrew,SAStrategy,SAStrategy,26

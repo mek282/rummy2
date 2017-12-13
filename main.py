@@ -118,7 +118,7 @@ def main():
     deck = Deck()
     game = Game(deck)
 
-    player1 = Adversarial(game, "test")
+    player1 = Human(game, "test")
     game.player1 = player1
     game.turn = player1
     player2 = SAStrategy(game, "test2")
@@ -215,13 +215,13 @@ def main():
 
         # execute player 1's turn
         if game.turn == game.player1:
-            print("Player 1's turn. P1's hand:")
-            print([(c.value, c.suit) for c in player2.hand.contents])
-            print("Time to draw")
+            #print("Player 1's turn. P1's hand:")
+            #print([(c.value, c.suit) for c in player2.hand.contents])
+            #print("Time to draw")
             c = game.player1.play_draw()
-            print("Player 1 drew:")
-            print(c.suit)
-            print(c.value)
+            #print("Player 1 drew:")
+            #print(c.suit)
+            #print(c.value)
             if c is None:
                 pygame.quit()
             msg = "Select a card to discard."
@@ -231,11 +231,11 @@ def main():
                             val_imgs, game, font, msg, player1, tmp, c)
             update_display(screen, background, p1_cards, discard_card, suit_imgs,
                             val_imgs, game, font, msg, player1, tmp, c)
-            print("Time to discard")
+            #print("Time to discard")
             c = game.player1.play_discard()
-            print("Player 1 discarded:")
-            print(c.suit)
-            print(c.value)
+            #print("Player 1 discarded:")
+            #print(c.suit)
+            #print(c.value)
             if c is None:
                 pygame.quit()
             update_display(screen, background, p1_cards, discard_card, suit_imgs,
@@ -248,8 +248,10 @@ def main():
                 msg = "You win!"
                 playing = False
                 print("YOU WIN!")
-                print("You won in "+str(turns)+" turns!")
+                print("You won in "+str(turns)+" turns! Your hand:")
                 print([(c.value, c.suit) for c in matches])
+                print("Opponent hand:")
+                print([(c.value, c.suit) for c in player2.hand.contents])
                 update_display(screen, background, p1_cards, discard_card, suit_imgs,
                                 val_imgs, game, font, msg, player1, tmp, None)
                 return ("player1", turns)
@@ -257,17 +259,17 @@ def main():
                 game.turn = game.player2
         # execute player 2's turn
         elif game.turn == game.player2:
-            print("AI's turn. AI's Hand:")
-            print([(c.value, c.suit) for c in player2.hand.contents])
+            #rint("AI's turn. AI's Hand:")
+            #print([(c.value, c.suit) for c in player2.hand.contents])
             d = game.recent_discard()
             c_draw = game.player2.play_draw()
-            print("AI drew:")
-            print(c_draw.suit)
-            print(c_draw.value)
+            #print("AI drew:")
+            #print(c_draw.suit)
+            #print(c_draw.value)
             c_disc = game.player2.play_discard()
-            print("AI discarded:")
-            print(c_disc.suit)
-            print(c_disc.value)
+            #print("AI discarded:")
+            #print(c_disc.suit)
+            #print(c_disc.value)
             if d == c_draw:
                 msg = ("P2 drew " + display_value(c_draw.value) + " of " + c_draw.suit
                 + " from the discard pile, and discarded " + display_value(c_disc.value) +
@@ -282,8 +284,10 @@ def main():
                 msg = "You lose! Player 2 has Rummy!"
                 playing = False
                 print("YOU LOSE!")
-                print("Your opponent won in "+str(turns)+" turns!")
+                print("Your opponent won in "+str(turns)+" turns! Opponent hand:")
                 print([(c.value, c.suit) for c in matches])
+                print("Your hand:")
+                print([(c.value, c.suit) for c in player1.hand.contents])
                 update_display(screen, background, p1_cards, discard_card, suit_imgs,
                                 val_imgs, game, font, msg, player1, tmp, None)
                 return ("player2", turns)
@@ -296,4 +300,4 @@ def main():
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 playing = False
 
-#main()
+main()
